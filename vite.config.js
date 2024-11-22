@@ -7,13 +7,13 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: './index.html',
-        background: './src/background.js', // Ensure correct path here
-        content: './src/content-script.jsx' // Ensure correct path here
+        background: './src/background.js',
+        content: './src/scripts/content.js'
       },
       output: {
         entryFileNames: `[name].js`,
         assetFileNames: `[name].[ext]`
-      }
-    }
+      },
+    },
   },
 });
