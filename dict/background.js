@@ -1,52 +1,112 @@
-// Copyright 2022 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.action.setBadgeText({
-      text: 'OFF'
-    });
+  console.log('Extension installed');
+});
+
+// Listen for clicks on the extension icon
+chrome.action.onClicked.addListener((tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: openPopUpSummary
   });
-  
-  const extensions = 'https://developer.chrome.com/docs/extensions';
-  const webstore = 'https://developer.chrome.com/docs/webstore';
-  
-  // When the user clicks on the extension action
-  chrome.action.onClicked.addListener(async (tab) => {
-    if (tab.url.startsWith(extensions) || tab.url.startsWith(webstore)) {
-      // We retrieve the action badge to check if the extension is 'ON' or 'OFF'
-      const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
-      // Next state will always be the opposite
-      const nextState = prevState === 'ON' ? 'OFF' : 'ON';
-  
-      // Set the action badge to the next state
-      await chrome.action.setBadgeText({
-        tabId: tab.id,
-        text: nextState
-      });
-  
-      if (nextState === 'ON') {
-        // Insert the CSS file when the user turns the extension on
-        await chrome.scripting.insertCSS({
-          files: ['focus-mode.css'],
-          target: { tabId: tab.id }
-        });
-      } else if (nextState === 'OFF') {
-        // Remove the CSS file when the user turns the extension off
-        await chrome.scripting.removeCSS({
-          files: ['focus-mode.css'],
-          target: { tabId: tab.id }
+});
+
+// Add keyboard shortcut for opening promptPopUp
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "_execute_action") {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      if (tab.id) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: openPromptPopUp
         });
       }
-    }
-  });
+    });
+  }
+});
+
+// Function to display the popUpSummary
+function openPopUpSummary() {
+  const existingPopUp = document.getElementById("popUpSummary");
+  if (existingPopUp) return; // Prevent multiple pop-ups
+
+  const popUp = document.createElement("div");
+  popUp.id = "popUpSummary";
+  popUp.style.position = "fixed";
+  popUp.style.top = "10px";
+  popUp.style.right = "10px";
+  popUp.style.width = "300px";
+  popUp.style.background = "white";
+  popUp.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.2)";
+  popUp.style.border = "1px solid #ccc";
+  popUp.style.padding = "10px";
+  popUp.style.zIndex = "9999";
+
+  const title = document.createElement("h2");
+  title.textContent = "Page Summary";
+
+  const url = document.createElement("p");
+  url.textContent = `URL: ${window.location.href}`;
+  url.style.fontSize = "14px";
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Close";
+  closeButton.style.marginTop = "10px";
+  closeButton.style.padding = "5px 10px";
+  closeButton.style.cursor = "pointer";
+  closeButton.onclick = () => document.body.removeChild(popUp);
+
+  popUp.appendChild(title);
+  popUp.appendChild(url);
+  popUp.appendChild(closeButton);
+  document.body.appendChild(popUp);
+}
+
+// Function to display the promptPopUp
+function openPromptPopUp() {
+  const existingPrompt = document.getElementById("promptPopUp");
+  if (existingPrompt) return; // Prevent multiple prompts
+
+  const promptPopUp = document.createElement("div");
+  promptPopUp.id = "promptPopUp";
+  promptPopUp.style.position = "fixed";
+  promptPopUp.style.top = "20%";
+  promptPopUp.style.left = "50%";
+  promptPopUp.style.transform = "translate(-50%, -50%)";
+  promptPopUp.style.width = "400px";
+  promptPopUp.style.background = "white";
+  promptPopUp.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.2)";
+  promptPopUp.style.border = "1px solid #ccc";
+  promptPopUp.style.padding = "20px";
+  promptPopUp.style.zIndex = "9999";
+
+  const title = document.createElement("h2");
+  title.textContent = "Chat with AI";
+
+  const textarea = document.createElement("textarea");
+  textarea.style.width = "100%";
+  textarea.style.height = "100px";
+  textarea.style.marginTop = "10px";
+  textarea.style.padding = "10px";
+
+  const sendButton = document.createElement("button");
+  sendButton.textContent = "Send";
+  sendButton.style.marginTop = "10px";
+  sendButton.style.padding = "5px 10px";
+  sendButton.style.cursor = "pointer";
+  sendButton.onclick = () => alert(`You said: ${textarea.value}`);
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Close";
+  closeButton.style.marginTop = "10px";
+  closeButton.style.marginLeft = "10px";
+  closeButton.style.padding = "5px 10px";
+  closeButton.style.cursor = "pointer";
+  closeButton.onclick = () => document.body.removeChild(promptPopUp);
+
+  promptPopUp.appendChild(title);
+  promptPopUp.appendChild(textarea);
+  promptPopUp.appendChild(sendButton);
+  promptPopUp.appendChild(closeButton);
+  document.body.appendChild(promptPopUp);
+}

@@ -7,13 +7,14 @@
     "service_worker": "background.js"
   },
   "action": {
+    "default_title": "Open Pop-up Summary"
   },
   "permissions": ["scripting", "activeTab"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+Z",
-        "mac": "Command+Z"
+        "mac": "Command+Shift+Z"
       }
     }
   }
