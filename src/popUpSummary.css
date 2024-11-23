@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.chrommy-pop-up-holder{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: flex-end;
+    background-color: black;
+    z-index: 1000000000;
+}
+.chrommy-pop-up{
+    
+    @apply p-2 w-full h-auto absolute max-w-lg;
+}
+.chrommy-pop-up-content{
+    
+
+    @apply bg-white bg-opacity-75 backdrop-blur-md p-2 rounded-lg shadow-md;
+}

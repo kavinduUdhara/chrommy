@@ -1,0 +1,44 @@
+<div class="chrommy-pop-up-holder" style="
+   position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 0rem;
+    display: flex;
+    justify-content: flex-end;
+    background-color: black;
+    z-index: 1000000000;
+    font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  ">
+  <div class="chrommy-pop-up" style="
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    max-width: 20rem;">
+    <div class="chrommy-pop-up-content" style="
+      background-color: rgba(255, 255, 255, 0.795);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+      ">
+      <div class="title" style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="logo" style="display: flex; align-items: center; gap:5px;">
+          <img src="../../dict/assets/chrome.jpg" alt="Google Logo" style="
+            width: 25px; height: 25px; border-radius: 50%;">
+          <p style="margin: 0;">Chrommy</p>
+        </div>
+        <div class="close-btn" style="width: 20px; height: 20px; background-color: rgba(128, 128, 128, 0.249); display: flex;align-items: center; justify-content: center; border-radius: 50%; padding: 3px; cursor: pointer; :hover{background-color: black;}">
+          <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><path d="m289.94 256 95-95A24 24 0 0 0 351 127l-95 95-95-95a24 24 0 0 0-34 34l95 95-95 95a24 24 0 1 0 34 34l95-95 95 95a24 24 0 0 0 34-34z"></path></svg>
+        </div>
+      </div>
+      <p>
+        URL:
+        ${url}
+      </p>
+      <button>Close</button>
+    </div>
+  </div>
+</div>
