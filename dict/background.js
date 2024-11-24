@@ -13,7 +13,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   // Enables the side panel on google.com
   await chrome.sidePanel.setOptions({
     tabId,
-    path: "sidePannel/index.html",
+    path: "sidePannel/react/build/inline-index.html",
     enabled: true,
   });
 });

@@ -14,12 +14,12 @@
 .main-holder.chat-open .page-info-holder{
   @apply mt-7 sticky top-1 z-50 p-1;
 }
-.main-holder.chat-open .page-info .more-info{
+/* .main-holder.chat-open .page-info .more-info{
   @apply -space-y-0;
 }
 .main-holder.chat-open .page-info #tab-url{
   @apply max-h-0 overflow-hidden;
-}
+} */
 .main-holder.chat-open .page-info-holder .ac-btn{
   @apply max-h-0 p-0 overflow-hidden;
 }
@@ -27,7 +27,7 @@
   @apply p-1 text-base;
 }
 .greeting-holder {
-  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300;
+  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-500;
 }
 .greeting-holder > img{
   @apply absolute drop-shadow-lg;
@@ -36,7 +36,7 @@
   @apply w-32 -top-20 right-0;
 }
 .greeting-holder .img-chair{
-  @apply w-48 -bottom-44 -right-28 -rotate-12 duration-300;
+  @apply w-48 -bottom-44 -right-28 -rotate-12 duration-500;
 }
 .greeting-holder .text{
   @apply w-fit px-3 -space-y-2 text-[#1e2f97] mt-20;
@@ -56,7 +56,7 @@
     @apply w-full max-w-72 flex flex-col gap-2 items-end z-20 px-3;
 }
 .page-info-holder .page-info{
-    @apply w-full bg-slate-50 bg-opacity-75 backdrop-blur-sm p-3 rounded-lg shadow flex items-center gap-2 duration-300;
+    @apply w-full bg-slate-50 bg-opacity-75 backdrop-blur-sm p-3 rounded-lg shadow flex items-center gap-2 duration-500;
 }
 .page-info-holder .page-info .fav-icon{
     @apply w-8 h-8 bg-white rounded-full p-1 shadow;
@@ -68,7 +68,7 @@
     @apply -space-y-1;
 }
 .page-info-holder .page-info #tab-url{
-    @apply duration-300;
+    @apply duration-500;
 }
 .page-info-holder .page-info #tab-title{
     @apply text-base line-clamp-1 font-bold;
