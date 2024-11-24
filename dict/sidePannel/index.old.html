@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>My Google side panel extension</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div class="main-holder chat-open">
+    <div class="greeting-holder">
+      <img src="./img/light-bulb.png" class="img-light" />
+      <img src="./img/chair.png" class="img-chair" />
+      <div class="text">
+        <h1 class="greeting">Good Evening!</h1>
+        <p>Welcome to chrommy</p>
+      </div>
+    </div>
+    <div class="page-info-holder">
+      <div class="page-info">
+        <img id="fav-icon" src="../assets/icon-32.png" alt="Favicon" class="fav-icon" />
+        <div class="more-info">
+          <p id="tab-title">GitHub - tomayac/prompt-api-playground: This is a demo of Chrome's built-in Prompt API
+            powered by Gemini Nano.</p>
+          <p id="tab-url">github.com</p>
+        </div>
+      </div>
+      <button class="ac-btn">Summarize
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" height="200px"
+          width="200px" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M208.49,184.49l-48,48a12,12,0,0,1-17,0l-48-48a12,12,0,0,1,17-17L140,195V128A84.09,84.09,0,0,0,56,44a12,12,0,0,1,0-24A108.12,108.12,0,0,1,164,128v67l27.51-27.52a12,12,0,0,1,17,17Z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-history-holder">
+      <div class="chat user">
+        <div class="context"><span class="cmd">Summarize Tab</span> Tab title</div>
+        <div class="text">
+          what is the core concept here
+        </div>
+      </div>
+      <div class="chat system">
+        <div class="text">
+          This is a welcome notice to the Brand Resource Center. It informs visitors that the center provides guidance on
+          using their logo, product icons, and other brand elements for various purposes, such as marketing, design, and
+          education. It emphasizes that the resource is available to anyone who needs to use their brand assets
+          effectively.
+        </div>
+      </div>
+    </div>
+    <div class="chat-box-send-holder">
+      <div class="context">
+        <div class="icon"></div>
+        <div class="text"><span class="cmd">Summarize Tab</span> My Google side pannel</div>
+      </div>
+      <div class="chat-box-send">
+        <textarea id="chat-input" rows="1" placeholder="Type a message..."></textarea>
+        <button>
+          <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+            stroke-linejoin="round" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z">
+            </path>
+            <path d="M6.5 12h14.5"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
