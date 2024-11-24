@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Site-specific side panel",
+    "version": "1.0",
+    "description": "Shows how to display the side panel only on google.com using the Side Panel API.",
+    "background": {
+      "service_worker": "service-worker.js"
+    },
+    "action": {
+      "default_title": "Click to open panel"
+    },
+    "permissions": ["sidePanel", "tabs"],
+    "commands": {
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Ctrl+B",
+          "mac": "Command+B"
+        }
+      }
+    }
+  }

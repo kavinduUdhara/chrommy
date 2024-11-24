@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main-holder {
+  @apply flex flex-col items-center h-svh overflow-x-hidden relative;
+}
+.main-holder.chat-open .greeting-holder{
+  @apply -mt-40 mb-0;
+}
+.main-holder.chat-open .greeting-holder .img-chair{
+  @apply bottom-0 w-20;
+}
+.main-holder.chat-open .page-info-holder{
+  @apply mt-7 sticky top-1 z-50 p-1;
+}
+.main-holder.chat-open .page-info .more-info{
+  @apply -space-y-0;
+}
+.main-holder.chat-open .page-info #tab-url{
+  @apply max-h-0 overflow-hidden;
+}
+.main-holder.chat-open .page-info-holder .ac-btn{
+  @apply max-h-0 p-0 overflow-hidden;
+}
+.main-holder.chat-open .page-info{
+  @apply p-1 text-base;
+}
+.greeting-holder {
+  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300;
+}
+.greeting-holder > img{
+  @apply absolute drop-shadow-lg;
+}
+.greeting-holder .img-light{
+  @apply w-32 -top-20 right-0;
+}
+.greeting-holder .img-chair{
+  @apply w-48 -bottom-44 -right-28 -rotate-12 duration-300;
+}
+.greeting-holder .text{
+  @apply w-fit px-3 -space-y-2 text-[#1e2f97] mt-20;
+}
+.greeting-holder h1 {
+  @apply drop-shadow-md text-5xl pb-2;
+  color: #1aa7ec;
+  background-image: linear-gradient(135deg, #1aa7ec 43%, #1e2f97 81%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.greeting-holder p {
+  @apply text-sm text-left drop-shadow-md px-1;
+}
+.page-info-holder{
+    @apply w-full max-w-72 flex flex-col gap-2 items-end z-20 px-3;
+}
+.page-info-holder .page-info{
+    @apply w-full bg-slate-50 bg-opacity-75 backdrop-blur-sm p-3 rounded-lg shadow flex items-center gap-2 duration-300;
+}
+.page-info-holder .page-info .fav-icon{
+    @apply w-8 h-8 bg-white rounded-full p-1 shadow;
+}
+.page-info-holder .page-info .fav-icon.dark{
+    @apply bg-slate-500;
+}
+.page-info-holder .page-info .more-info{
+    @apply -space-y-1;
+}
+.page-info-holder .page-info #tab-url{
+    @apply duration-300;
+}
+.page-info-holder .page-info #tab-title{
+    @apply text-base line-clamp-1 font-bold;
+}
+.page-info-holder .ac-btn{
+    @apply bg-blue-50  p-1 px-2 rounded-lg flex items-center gap-1 text-base select-none cursor-pointer;
+}
+.page-info-holder .ac-btn svg{
+    @apply w-3 h-3;
+}
+
+.chat-history-holder{
+    @apply w-full max-w-xl flex flex-col gap-2 mt-3 px-4 text-base z-40;
+}
+.chat-history-holder .chat{
+    @apply max-w-[80%] self-start bg-slate-50 p-0 px-0 rounded-md shadow-sm overflow-hidden;
+}
+.chat-history-holder .chat.user{
+  @apply self-end;
+}
+.chat-history-holder .chat .context{
+  @apply bg-blue-50 p-1 px-2 text-sm;
+}
+.chat-history-holder .chat .context .cmd{
+  @apply px-1 rounded-md mx-1 shadow-sm first:ml-0 bg-white;
+}
+.chat-history-holder .chat .text{
+  @apply p-1 px-2 text-base;
+}
+
+.chat-box-send-holder{
+    @apply w-11/12 max-w-xl flex flex-col gap-2 fixed bottom-3 z-50;
+}
+.chat-box-send-holder .context{
+    @apply bg-blue-100 p-2 px-2 mx-2 rounded-md pb-3 -mb-4 *:line-clamp-2 select-none shadow text-sm;
+}
+.chat-box-send-holder .context .cmd{
+    @apply bg-white px-1 rounded-md mx-1 shadow-sm first:ml-0;
+}
+.chat-box-send{
+    @apply w-full max-w-xl bg-blue-50 bg-opacity-75 backdrop-blur-sm p-0 rounded-full shadow-lg flex gap-2 duration-300 overflow-hidden text-base items-center bottom-3;
+}
+.chat-box-send #chat-input{
+    @apply w-full bg-transparent justify-self-stretch focus:outline-none focus:ring-0 p-2 px-5 overflow-auto;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  z-index: 100;
+}
+::-webkit-scrollbar-track{
+  @apply mt-3 mb-3
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(174, 174, 174, 0.644);
+  @apply rounded-full cursor-auto mt-5 mb-5 duration-200;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(174, 174, 174);
+}
+.chat-box-send.multiline{
+    @apply rounded-lg;
+}
+.chat-box-send button{
+    @apply w-5 h-5 mr-2 flex items-center justify-center;
+}

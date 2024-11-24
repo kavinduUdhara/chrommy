@@ -1,11 +1,16 @@
 console.log("popUpSummary.js loaded");
 
 chrome.action.onClicked.addListener(async (tab) => {
-  console.log(tab);
-  await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: openPopUpSummary,
+  console.log('Tab info:', tab);
+
+  // Set side panel options dynamically
+  await chrome.sidePanel.setOptions({
+    tabId: tab.id,
+    path: "sidePanel/index.html",
+    enabled: true // Ensure it's explicitly enabled
   });
+
+  console.log("Side panel opened.");
 });
 
 function openPopUpSummary() {

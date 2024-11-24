@@ -10,8 +10,7 @@
     "128": "assets/icon-128.png"
   },
   "background": {
-    "service_worker": "background.js",    
-    "type": "module"
+    "service_worker": "background.js"
   },
   "action": {
     "default_title": "Copilot for a smarter web journey.",
@@ -22,7 +21,7 @@
       "128": "assets/icon-128.png"
     }
   },
-  "permissions": ["scripting", "activeTab", "storage", "sidePanel"],
+  "permissions": ["scripting", "activeTab", "storage", "sidePanel", "tabs"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -30,5 +29,12 @@
         "mac": "Command+Shift+Z"
       }
     }
-  }
+  },
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }
