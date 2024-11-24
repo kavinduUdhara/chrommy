@@ -979,16 +979,12 @@ video {
   padding: 0.25rem;
 }
 
-.main-holder.chat-open .page-info .more-info > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(-0px * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(-0px * var(--tw-space-y-reverse));
+/* .main-holder.chat-open .page-info .more-info{
+  @apply -space-y-0;
 }
-
-.main-holder.chat-open .page-info #tab-url {
-  max-height: 0px;
-  overflow: hidden;
-}
+.main-holder.chat-open .page-info #tab-url{
+  @apply max-h-0 overflow-hidden;
+} */
 
 .main-holder.chat-open .page-info-holder .ac-btn {
   max-height: 0px;
@@ -1015,7 +1011,7 @@ video {
   text-align: center;
   font-size: 1rem;
   line-height: 1.5rem;
-  transition-duration: 300ms;
+  transition-duration: 500ms;
 }
 
 .greeting-holder > img {
@@ -1036,7 +1032,7 @@ video {
   width: 12rem;
   --tw-rotate: -12deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  transition-duration: 300ms;
+  transition-duration: 500ms;
 }
 
 .greeting-holder .text {
@@ -1108,7 +1104,7 @@ video {
   --tw-backdrop-blur: blur(4px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
-  transition-duration: 300ms;
+  transition-duration: 500ms;
 }
 
 .page-info-holder .page-info .fav-icon {
@@ -1135,7 +1131,7 @@ video {
 }
 
 .page-info-holder .page-info #tab-url {
-  transition-duration: 300ms;
+  transition-duration: 500ms;
 }
 
 .page-info-holder .page-info #tab-title {

@@ -72,6 +72,37 @@ function checkFaviconBrightness(faviconUrl) {
   };
 }
 
+document.addEventListener("input", (event) => {
+  const textarea = event.target;
+  if (textarea.id === "chat-input") {
+    const parent = textarea.closest(".chat-box-send");
+
+    // Reset height to auto to calculate new height
+    textarea.style.height = "auto";
+
+    // Set height to the scroll height or max height
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`; // Adjust 160px to your `max-h-40` in Tailwind
+
+    // Add 'multiline' class to parent if textarea height exceeds 40px
+    if (textarea.scrollHeight > 40) {
+      parent.classList.add("multiline");
+    } else {
+      parent.classList.remove("multiline");
+    }
+  }
+});
+
+
+let session; // Persist session across prompts
+
+async function initializeSession() {
+  if (!session) {
+    session = await ai.languageModel.create({
+      systemPrompt: "You are a friendly and knowledgeable assistant ready to help with any topic. You can answer questions, provide explanations, offer recommendations, and engage in meaningful conversations about various subjects. Be approachable, insightful, and conversational, adapting your responses to suit the user's needs. take responces in a conversational tone.",
+    });
+  }
+}
+
 async function handleSendMessage() {
   const input = document.getElementById("chat-input");
   const message = input.value.trim();
@@ -100,31 +131,29 @@ async function handleSendMessage() {
   // Clear the input field
   input.value = "";
 
-  // Use the Google Chrome Prompt API to generate a response with streaming
+  // Ensure the session is initialized
+  await initializeSession();
+
+  // Generate and stream the response
   try {
-    const { available } = await ai.languageModel.capabilities();
-    if (available !== "no") {
-      const session = await ai.languageModel.create();
+    // Create a new system message holder for streaming
+    const systemChat = document.createElement("div");
+    systemChat.className = "chat system";
+    const textDiv = document.createElement("div");
+    textDiv.className = "text";
+    systemChat.appendChild(textDiv);
+    chatHistory.appendChild(systemChat);
 
-      // Create a new system message holder for streaming
-      const systemChat = document.createElement("div");
-      systemChat.className = "chat system";
-      const textDiv = document.createElement("div");
-      textDiv.className = "text";
-      systemChat.appendChild(textDiv);
-      chatHistory.appendChild(systemChat);
-
-      // Stream the response
-      const stream = session.promptStreaming(message);
-      for await (const chunk of stream) {
-        // Append chunks to the system message text
-        textDiv.textContent = chunk;
-        chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll with each chunk
-      }
-
-      // Scroll to the bottom of chat history after streaming completes
-      chatHistory.scrollTop = chatHistory.scrollHeight;
+    // Stream the response
+    const stream = session.promptStreaming(message);
+    let fullResponse = ""; // To track the full response as it's streamed
+    for await (const chunk of stream) {
+      textDiv.textContent = chunk; // Update the UI with streamed chunks
+      chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll with each chunk
     }
+
+    // Scroll to the bottom of chat history after streaming completes
+    chatHistory.scrollTop = chatHistory.scrollHeight;
   } catch (error) {
     console.error("Error generating response:", error);
 
@@ -141,3 +170,6 @@ async function handleSendMessage() {
 document
   .getElementById("send-btn")
   .addEventListener("click", handleSendMessage);
+
+// Optional: Initialize session on page load
+initializeSession();
