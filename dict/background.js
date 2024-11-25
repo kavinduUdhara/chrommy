@@ -13,7 +13,21 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   // Enables the side panel on google.com
   await chrome.sidePanel.setOptions({
     tabId,
-    path: "hi/index.html",
+    path: "sidePanel/index.html",
     enabled: true,
   });
+});
+
+function predictNextWord(text) {
+  const words = ["world", "friend", "code", "example"];
+  const randomIndex = Math.floor(Math.random() * words.length);
+  return words[randomIndex];
+}
+
+// Listen for messages from the content script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "predict" && message.text) {
+    const prediction = predictNextWord(message.text);
+    sendResponse({ prediction });
+  }
 });
