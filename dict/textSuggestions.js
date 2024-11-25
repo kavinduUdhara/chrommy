@@ -1,134 +1,107 @@
-function insertStyles() {
-  // Create a new <style> element
-  const style = document.createElement("style");
-  style.type = "text/css"; // Set the type to CSS
-
-  // Add your CSS rules inside the <style> element
-  const css = `
-      .container {
-        position: relative;
-      }
-      .container__textarea {
-        background: transparent;
-        position: relative;
-      }
-      .container__mirror {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-      }
-      .container__pre-cursor {
-        color: transparent;
-      }
-      .container__post-cursor {
-        opacity: 0.4;
-      }
-    `;
-
-  // Add the CSS text to the <style> element
-  style.textContent = css;
-
-  // Append the <style> element to the <head> of the document
-  document.head.appendChild(style);
+// Function to get the cursor position and the last sentence before the cursor
+function getCursorPosition(textarea) {
+  const cursorPos = textarea.selectionStart;
+  const textBeforeCursor = textarea.value.slice(0, cursorPos);
+  const sentences = textBeforeCursor.split('.').map((sentence) => sentence.trim());
+  const lastSentence = sentences[sentences.length - 1]; // Last sentence before the cursor
+  return { cursorPos, lastSentence };
 }
 
-// Call the function to insert the styles
-insertStyles();
+// Function to send message to background script and get the suggestion
+function getPrediction(textarea) {
+  const { lastSentence } = getCursorPosition(textarea);
 
-// Add event listeners to detect typing in text areas
-document.addEventListener("input", (event) => {
-  if (event.target.tagName === "TEXTAREA" || event.target.tagName === "INPUT") {
-    const text = event.target.value;
-
-    // Send the current text to the background script for prediction
-    chrome.runtime.sendMessage({ action: "predict", text }, (response) => {
-      if (response?.prediction) {
-        showSuggestion(event.target, response.prediction);
+  if (lastSentence.length > 0) {
+    console.log("Sending message to background script...");
+    chrome.runtime.sendMessage(
+      { action: "predict", text: lastSentence },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.error("Error in message passing:", chrome.runtime.lastError);
+        } else {
+          const prediction = response.prediction;
+          insertSuggestion(textarea, prediction);
+        }
       }
-    });
+    );
+  }
+}
+
+// Function to insert the suggestion into the textarea inline, without modifying the content immediately
+function insertSuggestion(textarea, suggestion) {
+  const { cursorPos, lastSentence } = getCursorPosition(textarea);
+  const textBeforeCursor = textarea.value.slice(0, cursorPos - lastSentence.length);
+  const textAfterCursor = textarea.value.slice(cursorPos);
+  const suggestedText = textBeforeCursor + lastSentence + " " + suggestion + textAfterCursor;
+
+  // Store the suggestion temporarily in the textarea's data attribute
+  textarea.setAttribute("data-suggestion", suggestedText);
+
+  // Display the suggestion inline without immediately modifying the content
+  displayInlineSuggestion(textarea, suggestion);
+}
+
+
+function displayInlineSuggestion(textarea, suggestion) {
+  // Create or update the suggestion box that appears inline with the text area
+  //change the bgclor of textarea
+  textarea.style.backgroundColor = "#f0f0f0";
+  let suggestionBox = document.querySelector(".inline-suggestion");
+  if (!suggestionBox) {
+    suggestionBox = document.createElement("span");
+    suggestionBox.classList.add("inline-suggestion");
+    suggestionBox.style.position = "absolute";
+    suggestionBox.style.zIndex = "9999";
+    suggestionBox.style.backgroundColor = "#f0f0f0";
+    suggestionBox.style.padding = "2px 4px";
+    suggestionBox.style.border = "1px solid #ccc";
+    suggestionBox.style.borderRadius = "3px";
+    document.body.appendChild(suggestionBox);
+  }
+
+  // Position the suggestion box correctly inside the textarea
+  const { cursorPos } = getCursorPosition(textarea);
+  const rect = textarea.getBoundingClientRect();
+  suggestionBox.style.top = rect.top + window.scrollY + "px";
+  suggestionBox.style.left = rect.left + window.scrollX + cursorPos + "px";
+  suggestionBox.textContent = suggestion;
+}
+
+// Listen for user input in the textarea
+document.addEventListener("input", (event) => {
+  const textarea = event.target;
+
+  if (textarea && textarea.tagName === "TEXTAREA") {
+    getPrediction(textarea);
   }
 });
 
-// Add keydown listener to accept the suggestion
+// Handle Tab key for inserting suggestions
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Tab" && currentSuggestion) {
-    event.preventDefault(); // Prevent the default tab behavior
-    const target = document.activeElement;
+  const textarea = event.target;
 
-    if (
-      target &&
-      (target.tagName === "TEXTAREA" || target.tagName === "INPUT")
-    ) {
-      target.value += currentSuggestion; // Append the suggestion to the input
-      clearSuggestion(); // Clear the suggestion
+  if (event.key === "Tab" && textarea && textarea.tagName === "TEXTAREA") {
+    // Prevent default tab behavior
+    event.preventDefault();
+
+    // Insert the suggestion from the data attribute
+    const suggestion = textarea.getAttribute("data-suggestion");
+    if (suggestion) {
+      textarea.value = suggestion;
+      textarea.removeAttribute("data-suggestion"); // Clear suggestion after inserting
     }
   }
 });
 
-let currentSuggestion = null; // Store the current suggestion
-let suggestionElement = null; // Store the suggestion overlay element
+// Clear the suggestion if the user types anything after the suggestion
+document.addEventListener("keydown", (event) => {
+  const textarea = event.target;
 
-function showSuggestion(inputElement, suggestion) {
-  clearSuggestion(); // Clear any existing suggestion
-
-  currentSuggestion = suggestion;
-
-  inputElement.classList.add("container__textarea");
-  //wrap input element with a div container
-  const containerDiv = document.createElement("div");
-  containerDiv.className = "container";
-  containerDiv.classList.add("container");
-  const containerID = Math.random().toString(36).substring(7);
-  containerDiv.id = containerID;
-  inputElement.parentNode.insertBefore(containerDiv, inputElement);
-  containerDiv.appendChild(inputElement);
-
-  // Create an overlay for the suggestion
-  suggestionElement = document.createElement("div");
-  suggestionElement.className = "suggestion-overlay";
-  suggestionElement.textContent = suggestion;
-
-  // Add a visual Tab indicator
-  const tabIcon = document.createElement("span");
-  tabIcon.className = "tab-icon";
-  tabIcon.textContent = "⭾"; // Unicode character for Tab
-  suggestionElement.appendChild(tabIcon);
-
-  // Style the overlay
-  const rect = inputElement.getBoundingClientRect();
-  suggestionElement.style.position = "absolute";
-  suggestionElement.style.left = `${rect.left + window.scrollX}px`;
-  suggestionElement.style.top = `${rect.top + window.scrollY + rect.height}px`;
-  suggestionElement.style.color = "rgba(0, 0, 0, 0.6)";
-  suggestionElement.style.background = "transparent";
-  suggestionElement.style.pointerEvents = "none";
-  suggestionElement.style.fontSize = getComputedStyle(inputElement).fontSize;
-
-  document.body.appendChild(suggestionElement);
-}
-
-function clearSuggestion() {
-  if (suggestionElement) {
-    suggestionElement.remove();
-    suggestionElement = null;
-  }
-  currentSuggestion = null;
-}
-
-// Sample prediction logic
-function predictNextWord(text) {
-  const words = ["world", "friend", "code", "example"];
-  const randomIndex = Math.floor(Math.random() * words.length);
-  return words[randomIndex];
-}
-
-// Handle messages from the content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "predict" && message.text) {
-    const prediction = predictNextWord(message.text);
-    sendResponse({ prediction });
+  if (textarea && textarea.tagName === "TEXTAREA") {
+    // Check if the user typed anything after the suggestion
+    const currentText = textarea.value;
+    if (currentText !== textarea.getAttribute("data-suggestion")) {
+      textarea.removeAttribute("data-suggestion"); // Clear the suggestion
+    }
   }
 });
