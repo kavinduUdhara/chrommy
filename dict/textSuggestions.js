@@ -1,32 +1,125 @@
-// Function to get the cursor position and the last sentence before the cursor
-function getCursorPosition(textarea) {
-  const cursorPos = textarea.selectionStart;
-  const textBeforeCursor = textarea.value.slice(0, cursorPos);
-  const sentences = textBeforeCursor
-    .split(".")
-    .map((sentence) => sentence.trim());
-  const lastSentence = sentences[sentences.length - 1]; // Last sentence before the cursor
-  return { cursorPos, lastSentence };
+// Function to send a message to the background script and get the suggestion
+function sendMessageToBackground(message) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(response);
+      }
+    });
+  });
 }
 
-// Function to send message to background script and get the suggestion
-function getPrediction(textarea) {
-  const { lastSentence } = getCursorPosition(textarea);
+let available = null;
+let session = null;
 
-  if (lastSentence.length > 0) {
-    console.log("Sending message to background script...");
-    chrome.runtime.sendMessage(
-      { action: "predict", text: lastSentence },
-      (response) => {
-        if (chrome.runtime.lastError) {
-          console.error("Error in message passing:", chrome.runtime.lastError);
-        } else {
-          const prediction = response.prediction;
-          insertSuggestion(textarea, prediction);
-        }
-      }
-    );
+// Function to send message to background script and get the suggestion
+async function getPrediction(textarea) {
+  if (session) {
+    await session.clone();
+    console.log("sesstion updated");
   }
+  if (!available) {
+    try {
+      // Fetch capabilities and initialize session if available
+      const {
+        available: isAvailable,
+        defaultTemperature,
+        defaultTopK,
+        maxTopK,
+      } = await ai.languageModel.capabilities();
+
+      available = isAvailable; // Update global `available` variable
+
+      if (available !== "no") {
+        session = await ai.languageModel.create({
+          systemPrompt: `
+          You are a sentence completion assistant. Your task is to continue a given sentence without repeating any words from the original sentence. If the sentence appears complete, add nothing.
+
+Instructions:
+1. Carefully read the incomplete sentence provided below.
+2. If the sentence requires further words to feel complete, generate a continuation that seamlessly flows from the original text.  Do not repeat any words from the original sentence in your continuation.
+3. If the provided sentence feels complete, output nothing (an empty string).
+          `,
+          temperature: 0.4,
+          topK: 30,
+        });
+        console.log("Session created:", session);
+      } else {
+        console.warn("Language model capabilities are unavailable.");
+      }
+    } catch (error) {
+      console.error("Error initializing AI capabilities:", error);
+      return; // Exit the function if session creation fails
+    }
+  }
+
+  // Ensure a valid session exists before proceeding
+  if (session && available !== "no") {
+    const lastSentence = textarea.value;
+
+    if (lastSentence.length > 5) {
+      try {
+        //         const prompt = `
+        // Continue writing from the end of the following text without repeating or rephrasing any part of it. Stop after completing exactly one coherent sentence.
+        // If the text feels complete and no continuation is needed, return nothing (an empty string) instead.
+        // Do not repeat or restate any words or phrases from the input.
+        // Never attempt to reply or generate output for the sentence itself.
+        // Input: ${lastSentence}
+        // `;
+        const prompt = `
+You are a sentence completion assistant. Your task is to continue a given sentence without repeating any words from the original sentence. If the sentence appears complete, add nothing.
+
+Instructions:
+1. Carefully read the incomplete sentence provided below.
+2. If the sentence requires further words to feel complete, generate a continuation that seamlessly flows from the original text.  Do not repeat any words from the original sentence in your continuation.
+3. If the provided sentence feels complete, output nothing (an empty string).
+
+Incomplete Sentence: ${lastSentence}
+`;
+        console.log("Prompt:", prompt);
+        // Use the session to generate a prediction stream
+        const stream = session.promptStreaming(prompt);
+        for await (const chunk of stream) {
+          console.log("Chunk:", chunk);
+          insertSuggestion(textarea, cleanOutput(lastSentence, chunk));
+        }
+      } catch (error) {
+        console.error("Error in prediction stream:", error);
+      }
+    }
+  } else {
+    console.warn("Session is not available. Unable to process prediction.");
+  }
+}
+
+function cleanOutput(input, output) {
+  // Normalize case for comparison
+  const inputLower = input.trim().toLowerCase();
+  const outputLower = output.trim().toLowerCase();
+
+  // Split into words for tokenized comparison
+  const inputWords = inputLower.split(/\s+/);
+  const outputWords = outputLower.split(/\s+/);
+
+  // Check if the start of the output matches the end of the input
+  const overlapIndex = inputWords.reduce((overlap, word, index) => {
+    if (outputLower.startsWith(inputWords.slice(index).join(" "))) {
+      overlap = index; // Update overlap starting position
+    }
+    return overlap;
+  }, null);
+
+  if (overlapIndex !== null) {
+    const filteredOutput = outputWords.slice(
+      inputWords.slice(overlapIndex).length
+    );
+    return filteredOutput.join(" ");
+  }
+
+  // If no overlap is found, return the original output
+  return output;
 }
 
 //doc: https://chatgpt.com/share/6744ceac-61b8-800b-a44a-2eea5b8c9353
@@ -45,7 +138,6 @@ function insertSuggestion(textarea, suggestion) {
   // Display the suggestion inline without modifying the content
   displayInlineSuggestion(textarea, suggestion);
 }
-
 
 //doc: https://chatgpt.com/share/6744ceac-61b8-800b-a44a-2eea5b8c9353
 function displayInlineSuggestion(inputElement, suggestions) {
@@ -72,9 +164,13 @@ function displayInlineSuggestion(inputElement, suggestions) {
     // overlay.style.width = `${inputRect.width}px`;
     // overlay.style.height = `${inputRect.height}px`;
     overlay.style.top = `${inputRect.top + window.scrollY}px`;
-    overlay.style.bottom = `${window.innerHeight - inputRect.bottom - window.scrollY}px`;
+    overlay.style.bottom = `${
+      window.innerHeight - inputRect.bottom - window.scrollY
+    }px`;
     overlay.style.left = `${inputRect.left + window.scrollX}px`;
-    overlay.style.right = `${window.innerWidth - inputRect.right - window.scrollX}px`;
+    overlay.style.right = `${
+      window.innerWidth - inputRect.right - window.scrollX
+    }px`;
 
     // Sync styles from input
     overlay.style.padding = computedStyles.padding;
@@ -90,7 +186,7 @@ function displayInlineSuggestion(inputElement, suggestions) {
 
   // Function to update content with suggestions
   const updateContent = () => {
-    overlay.innerHTML = `${inputElement.value}<span style="background: yellow;">${suggestions}</span>`;
+    overlay.innerHTML = `${inputElement.value}<span>${suggestions}</span>`;
   };
 
   // Initialize overlay
@@ -110,21 +206,51 @@ function displayInlineSuggestion(inputElement, suggestions) {
     overlay.scrollTop = inputElement.scrollTop;
     overlay.scrollLeft = inputElement.scrollLeft;
   });
+
+  // Using ResizeObserver to detect changes in textarea size
+  const resizeObserver = new ResizeObserver(() => {
+    updateOverlay(); // Trigger update when the textarea resizes
+  });
+
+  // Observe the inputElement's resize events
+  resizeObserver.observe(inputElement);
+
+  // Remove ResizeObserver when no longer needed (optional cleanup)
+  inputElement.addEventListener("remove", () => {
+    resizeObserver.disconnect();
+  });
 }
-
-
-
-
 
 // Listen for user input in the textarea
 document.addEventListener("input", (event) => {
   const textarea = event.target;
 
+  //clear the suggestion when new input is detected
+  textarea.removeAttribute("data-suggestion");
+  const overlay = document.querySelector(".suggestions-overlay");
+  if (overlay) {
+    overlay.remove();
+  }
+
   if (textarea && textarea.tagName === "TEXTAREA") {
+    const currentValue = textarea.value;
+
+    // Check if the change is caused by Backspace or editing anywhere but the end
+    const inputType = event.inputType;
+    const cursorPosition = textarea.selectionStart;
+
+    // Clear suggestions if Backspace is detected or editing is not at the end
+    if (
+      inputType === "deleteContentBackward" ||
+      cursorPosition !== currentValue.length
+    ) {
+      return;
+    }
+
+    // Generate prediction only if editing at the end
     getPrediction(textarea);
   }
 });
-
 // Handle Tab key for inserting suggestions
 document.addEventListener("keydown", (event) => {
   const textarea = event.target;
@@ -135,10 +261,14 @@ document.addEventListener("keydown", (event) => {
 
     // Insert the suggestion from the data attribute
     const suggestion = textarea.getAttribute("data-suggestion");
-    console.log("suggestion",suggestion);
+    console.log("suggestion", suggestion);
     if (suggestion) {
       textarea.value = suggestion;
       textarea.removeAttribute("data-suggestion");
+      const overlay = document.querySelector(".suggestions-overlay");
+      if (overlay) {
+        overlay.innerHTML = "";
+      }
     }
   }
 });
