@@ -18,16 +18,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   });
 });
 
-function predictNextWord(text) {
-  const words = ["world", "friend", "code", "example"];
-  const randomIndex = Math.floor(Math.random() * words.length);
-  return words[randomIndex];
+async function predictNextWord(text) {
+  
 }
 
 // Listen for messages from the content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === "predict" && message.text) {
-    const prediction = predictNextWord(message.text);
+    const prediction = await predictNextWord(message.text);
     sendResponse({ prediction });
   }
 });
