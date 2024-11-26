@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
+  },
+  "scripts": {
+    "build:txts": "npx tailwindcss -i ./src/textSuggestions.css -o ../dict/textSuggestions.css --watch"
+  }
+}
