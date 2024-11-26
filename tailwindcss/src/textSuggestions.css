@@ -1,3 +1,11 @@
 .suggestions-overlay span{
-  @apply text-gray-600 bg-white bg-opacity-70 backdrop-blur-sm;
+  @apply text-slate-500;
+}
+.suggestions-overlay .tab{
+  @apply rounded shadow-sm drop-shadow overflow-hidden inline-flex px-1 ml-1;
+  transform-origin: center left;
+  transform: scale(50%) !important;
+  border: 1px solid black;
+  font-size: inherit;
+  font-family: inherit;
 }

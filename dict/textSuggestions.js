@@ -41,9 +41,22 @@ Instructions:
 1. Carefully read the incomplete sentence provided below.
 2. If the sentence requires further words to feel complete, generate a continuation that seamlessly flows from the original text.  Do not repeat any words from the original sentence in your continuation.
 3. If the provided sentence feels complete, output nothing (an empty string).
+
+example 1:
+Incomplete Sentence: "The quick brown fox "
+Expected Output: "jumped over the lazy dog"
+Bad Output: "The quick brown fox jumped over the lazy dog" (repeated words)
+
+example 2:
+Incomplete Sentence: "The sun was setting behind the mountains"
+Expected Output: " casting a warm orange glow across the sky."
+Bad Output: "The sun was setting behind the mountains casting a warm orange glow across the sky." (repeated words)
+
+example 3:
+Incomplete Sentence: "After a long day at work"
+Expected Output: " she decided to relax with a cup of tea and a good book."
+Bad Output: "After a long day at work she decided to relax with a cup of tea and a good book." (repeated words)
           `,
-          temperature: 0.4,
-          topK: 30,
         });
         console.log("Session created:", session);
       } else {
@@ -73,17 +86,19 @@ You are a sentence completion assistant. Your task is to continue a given senten
 
 Instructions:
 1. Carefully read the incomplete sentence provided below.
-2. If the sentence requires further words to feel complete, generate a continuation that seamlessly flows from the original text.  Do not repeat any words from the original sentence in your continuation.
+2. If the sentence requires further words to feel complete, generate a continuation that seamlessly flows from the original text.  Do not repeat any words from the original(incomplete) sentence in your continuation.
 3. If the provided sentence feels complete, output nothing (an empty string).
 
-Incomplete Sentence: ${lastSentence}
+Incomplete Sentence: "${lastSentence}"
 `;
         console.log("Prompt:", prompt);
         // Use the session to generate a prediction stream
         const stream = session.promptStreaming(prompt);
         for await (const chunk of stream) {
           console.log("Chunk:", chunk);
-          insertSuggestion(textarea, cleanOutput(lastSentence, chunk));
+          let cleanedOutput = cleanOutput(lastSentence, chunk)
+          cleanedOutput = cleanedOutput.replace(/^\s*"\s*|\s*"\s*$/g, ''); //clean the " at the start and end of the string
+          insertSuggestion(textarea, cleanedOutput);
         }
       } catch (error) {
         console.error("Error in prediction stream:", error);
@@ -186,7 +201,7 @@ function displayInlineSuggestion(inputElement, suggestions) {
 
   // Function to update content with suggestions
   const updateContent = () => {
-    overlay.innerHTML = `${inputElement.value}<span>${suggestions}</span>`;
+    overlay.innerHTML = `${inputElement.value}<span>${suggestions}</span><span class="tab">TAB</span>`;
   };
 
   // Initialize overlay
