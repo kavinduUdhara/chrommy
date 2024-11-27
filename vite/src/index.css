@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.def-loading-box {
+    @apply relative overflow-hidden rounded-xl mt-2;
+  }
+  
+  /* Gradient animation */
+  .def-loading-box::before {
+    @apply absolute top-0 left-0 w-full h-full z-10;
+    content: "";
+    background: linear-gradient(
+      to right,
+      #f1f5f900,
+      #f8fafc,
+      #f1f5f900
+    ); /* Gradient from gray to white */
+    animation: slideGradient 0.5s alternate-reverse infinite;
+  }
+  @keyframes slideGradient {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(50%);
+    }
+  }
+  .def-img-with-loading {
+    @apply rounded-md max-w-lg bg-slate-100 h-44 select-none;
+  }
