@@ -13,12 +13,12 @@ const loadTheActiveTabInfo = () => {
           (response) => {
             const faviconUrl = response?.favicon || null;
             // Resolve the Promise with tab information
-            resolve({ tab: tab.title, domain: domain, favicon: faviconUrl});
+            resolve({ tab: tab.title, domain: domain, favicon: faviconUrl });
           }
         );
       } else {
         // No active tab found, resolve with default values
-        resolve({ tab: null, domain: null, favicon: null});
+        resolve({ tab: null, domain: null, favicon: null });
       }
     });
   });
@@ -75,4 +75,32 @@ const getGreeting = () => {
   return "Good Evening!";
 };
 
-export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting};
+const getWebsiteContent = () => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(
+          tabs[0].id,
+          { action: "extractData" },
+          (response) => {
+            if (chrome.runtime.lastError || !response) {
+              reject("Failed to fetch page data");
+            } else {
+              resolve(response);
+            }
+          }
+        );
+      } else {
+        reject("No active tab found");
+      }
+    });
+  });
+};
+
+import { v4 as uuidv4 } from 'uuid';
+
+const getUniqueID = () => {
+  return uuidv4();
+}
+
+export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID };
