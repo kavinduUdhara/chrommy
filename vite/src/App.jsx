@@ -17,6 +17,8 @@ import {
 } from "./AppFunctions";
 import GeminiSVG from "./components/Gemini";
 
+import { useAiSessionContext } from "./hook/AiSessionProvider";
+
 function App() {
   const [tabInfo, setTabInfo] = useState({
     tab: "",
@@ -33,7 +35,8 @@ function App() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatPreAnimation, setChatPreAnimation] = useState(false);
   const [currentChat, setCurrentChat] = useState([]);
-  const [sesstionData, setSesstionData] = useState(null);
+
+  const { promptAI } = useAiSessionContext();
 
   //load the activeTab info
   useEffect(() => {
@@ -52,8 +55,6 @@ function App() {
 
     fetchTabInfo();
   }, []);
-
-  
 
   useEffect(() => {
     if (!chatPreAnimation) {
@@ -88,8 +89,15 @@ function App() {
     });
   };
 
-  const handelSubmitButton = () => {
-    const newMessage = {
+  useEffect(() => {
+    console.log(currentChat);
+  }, [currentChat])
+
+  const handelSubmitButton = async () => {
+    if (!textBox.text && !textBox.cmds) return;
+
+    // Add user's message to the chat
+    const userMessage = {
       text: textBox.text,
       context: textBox.context,
       cmds: textBox.cmds,
@@ -97,14 +105,59 @@ function App() {
       user: true,
       id: getUniqueID(),
     };
-    setCurrentChat((prevChat) => [...prevChat, newMessage]);
+    setCurrentChat((prevChat) => [...prevChat, userMessage]);
 
+    // Add a placeholder for the AI's response
+    const aiMessageId = getUniqueID();
+    const aiMessagePlaceholder = {
+      text: "",
+      context: "",
+      cmds: null,
+      time: new Date().toISOString(),
+      user: false,
+      id: aiMessageId,
+    };
+    setCurrentChat((prevChat) => [...prevChat, aiMessagePlaceholder]);
+
+    // Clear the input box
     setTextBox({
       text: "",
       cmds: null,
       context: "",
       placeholder: "Tell me more about...",
     });
+    console.log(currentChat);
+    // Handle streaming response
+    try {
+
+      await promptAI(textBox.text, (chunk) => {
+        // Optimistic UI update (partial updates)
+        console.log(currentChat);
+        setCurrentChat((prevChat) =>
+          prevChat.map((msg) =>
+            msg.id === aiMessageId
+              ? {
+                  ...msg,
+                  text: chunk
+                }
+              : msg
+          )
+        );
+      });
+
+      console.log("Streaming completed.");
+    } catch (error) {
+      console.error("Error during streaming response:", error.message);
+
+      // Final error message update
+      setCurrentChat((prevChat) =>
+        prevChat.map((msg) =>
+          msg.id === aiMessageId
+            ? { ...msg, text: "Something went wrong. Please try again." }
+            : msg
+        )
+      );
+    }
   };
 
   return (
@@ -174,7 +227,8 @@ function App() {
                 <div className={`chat ${chat.user ? "user" : "system"}`}>
                   {(chat.context || chat.cmds) && (
                     <div class="context">
-                      {chat.cmds.length > 0 &&
+                      {chat.cmds &&
+                        chat.cmds.length > 0 &&
                         chat.cmds.map((cmd) => (
                           <span class="cmd">{cmd}</span>
                         ))}{" "}
@@ -190,7 +244,8 @@ function App() {
           {(textBox.context || textBox.cmds) && (
             <div class="context">
               <div class="text">
-                {textBox.cmds.length > 0 &&
+                {textBox.cmds &&
+                  textBox.cmds.length > 0 &&
                   textBox.cmds.map((cmd) => (
                     <span class="cmd">{cmd}</span>
                   ))}{" "}

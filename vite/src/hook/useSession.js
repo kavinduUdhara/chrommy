@@ -25,18 +25,27 @@ export const useAiSession = () => {
   };
 
   // Handle a synchronous prompt
-  const promptAI = async (prompt) => {
+  const promptAI = async (prompt, onChunk) => {
     if (!session) {
       throw new Error("AI session is not initialized.");
     }
+  
     try {
-      const result = await session.prompt(prompt);
-      return result;
+      // Use the streaming method to handle the prompt
+      const stream = session.promptStreaming(prompt);
+  
+      // Process each chunk in the stream
+      for await (const chunk of stream) {
+        if (onChunk && typeof onChunk === "function") {
+          onChunk(chunk); // Invoke the callback with the current chunk
+        }
+      }
     } catch (err) {
-      console.error("Error during prompt:", err);
+      console.error("Error during streaming prompt:", err);
       throw err;
     }
   };
+  
 
   // Handle a streaming prompt
   const promptAIStreaming = async (prompt, onChunk) => {

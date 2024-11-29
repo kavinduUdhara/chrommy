@@ -17,15 +17,3 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
     enabled: true,
   });
 });
-
-async function predictNextWord(text) {
-  
-}
-
-// Listen for messages from the content script
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message.action === "predict" && message.text) {
-    const prediction = await predictNextWord(message.text);
-    sendResponse({ prediction });
-  }
-});
