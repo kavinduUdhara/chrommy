@@ -14,6 +14,7 @@ import {
   checkFaviconBrightness,
   getGreeting,
   getUniqueID,
+  getWebsiteContent,
 } from "./AppFunctions";
 import GeminiSVG from "./components/Gemini";
 
@@ -32,6 +33,7 @@ function App() {
     context: "",
     placeholder: "Tell me more about...",
   });
+  const [textBoxActive, setTextBoxActive] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatPreAnimation, setChatPreAnimation] = useState(false);
   const [currentChat, setCurrentChat] = useState([]);
@@ -89,15 +91,13 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    console.log(currentChat);
-  }, [currentChat])
-
   const handelSubmitButton = async () => {
     if (!textBox.text && !textBox.cmds) return;
 
+    setTextBoxActive(false);
+
     // Add user's message to the chat
-    const userMessage = {
+    let userMessage = {
       text: textBox.text,
       context: textBox.context,
       cmds: textBox.cmds,
@@ -105,7 +105,23 @@ function App() {
       user: true,
       id: getUniqueID(),
     };
+    if (userMessage.cmds && userMessage.cmds.includes("Summarize Tab")) {
+      let webContent = await getWebsiteContent();
+      //append this web content part into usermessage.text (to the bottom)
+      //convert webContent object into a string:
+      userMessage.text += `\n\nsummarize following website content: \n${webContent}`;
+    }
+
     setCurrentChat((prevChat) => [...prevChat, userMessage]);
+
+    // Clear the input box
+    setTextBox({
+      text: "",
+      cmds: null,
+      context: "",
+      placeholder: "Tell me more about...",
+    });
+    console.log(currentChat);
 
     // Add a placeholder for the AI's response
     const aiMessageId = getUniqueID();
@@ -119,14 +135,6 @@ function App() {
     };
     setCurrentChat((prevChat) => [...prevChat, aiMessagePlaceholder]);
 
-    // Clear the input box
-    setTextBox({
-      text: "",
-      cmds: null,
-      context: "",
-      placeholder: "Tell me more about...",
-    });
-    console.log(currentChat);
     // Handle streaming response
     try {
 
@@ -146,6 +154,7 @@ function App() {
       });
 
       console.log("Streaming completed.");
+      setTextBoxActive(true);
     } catch (error) {
       console.error("Error during streaming response:", error.message);
 
@@ -259,12 +268,13 @@ function App() {
           <div className="chat-box-send">
             <textarea
               id="chat-input"
+              disabled={!textBoxActive}
               rows="1"
               placeholder={textBox.placeholder}
               value={textBox.text}
               onChange={(e) => setTextBox({ ...textBox, text: e.target.value })}
             ></textarea>
-            <button id="send-btn" onClick={handelSubmitButton}>
+            <button id="send-btn" onClick={handelSubmitButton} disabled={!textBoxActive}>
               <TbSend2 />
             </button>
           </div>

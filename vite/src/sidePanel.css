@@ -162,7 +162,7 @@
   @apply justify-start;
 }
 .chat-history-holder .chat-box-holder .profile{
-  @apply bg-white min-h-5 max-h-5 min-w-6 flex items-center justify-center rounded-full mt-1;
+  @apply bg-white min-h-5 max-h-5 min-w-6 flex items-center justify-center rounded-full mt-2;
 }
 .chat-history-holder .chat-box-holder .profile svg{
   @apply w-full h-full;

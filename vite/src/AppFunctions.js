@@ -103,4 +103,4 @@ const getUniqueID = () => {
   return uuidv4();
 }
 
-export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID };
+export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID, getWebsiteContent };
