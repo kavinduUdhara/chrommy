@@ -6,8 +6,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-
-const extractPageData = () => {
+const extractPageDataAsMarkdown = () => {
   // Select all relevant elements in the document flow
   const elements = Array.from(
     document.querySelectorAll("h1, h2, h3, p, ul, ol")
@@ -34,15 +33,43 @@ const extractPageData = () => {
     };
   });
 
-  return {
-    content, // An array of elements in order
-    url: window.location.href, // Page URL
-    title: document.title, // Page title
-  };
+  // Convert the extracted content into Markdown format
+  let markdown = `# ${document.title}\n\n[Source URL](${window.location.href})\n\n`;
+
+  content.forEach(({ tag, text }) => {
+    switch (tag) {
+      case "h1":
+        markdown += `# ${text}\n\n`;
+        break;
+      case "h2":
+        markdown += `## ${text}\n\n`;
+        break;
+      case "h3":
+        markdown += `### ${text}\n\n`;
+        break;
+      case "p":
+        markdown += `${text}\n\n`;
+        break;
+      case "ul":
+      case "ol":
+        const listSyntax = tag === "ul" ? "- " : "1. ";
+        markdown += text
+          .split("\n")
+          .map((item) => `${listSyntax}${item}`)
+          .join("\n");
+        markdown += `\n\n`;
+        break;
+      default:
+        break;
+    }
+  });
+
+  return markdown.trim(); // Return the formatted Markdown text
 };
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "extractData") {
-    const pageData = extractPageData();
+    const pageData = extractPageDataAsMarkdown();
     sendResponse(pageData);
   }
 });
