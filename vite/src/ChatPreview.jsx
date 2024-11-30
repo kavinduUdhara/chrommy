@@ -15,6 +15,7 @@ import {
   getGreeting,
   getUniqueID,
   getWebsiteContent,
+  parseHtml,
 } from "./AppFunctions";
 import GeminiSVG from "./components/Gemini";
 
@@ -87,28 +88,33 @@ export default function ChatPreview({ promptAI, session }) {
     });
   };
 
+  useEffect(() => {console.log("currentChat", currentChat)}, [currentChat])
   const handelSubmitButton = async () => {
     if (!textBox.text && !textBox.cmds) return;
 
     setTextBoxActive(false);
 
     // Add user's message to the chat
-    let userMessage = {
+    const userMessage = {
       text: textBox.text,
+      preview: await parseHtml(textBox.text),
       context: textBox.context,
       cmds: textBox.cmds,
       time: new Date().toISOString(),
       user: true,
       id: getUniqueID(),
     };
+
+    let userMessageText = userMessage.text;
+
+    setCurrentChat((prevChat) => [...prevChat, userMessage]);
+
     if (userMessage.cmds && userMessage.cmds.includes("Summarize Tab")) {
       let webContent = await getWebsiteContent();
       //append this web content part into usermessage.text (to the bottom)
       //convert webContent object into a string:
-      userMessage.text += `\n\nsummarize following website content\nIgnore all the content that are not in english: \n${webContent}`;
+      userMessageText += `\n\nsummarize following website content\n \n${webContent}`;
     }
-
-    setCurrentChat((prevChat) => [...prevChat, userMessage]);
 
     // Clear the input box
     setTextBox({
@@ -123,6 +129,7 @@ export default function ChatPreview({ promptAI, session }) {
     const aiMessageId = getUniqueID();
     const aiMessagePlaceholder = {
       text: "",
+      preview: "",
       context: "",
       cmds: null,
       time: new Date().toISOString(),
@@ -133,8 +140,9 @@ export default function ChatPreview({ promptAI, session }) {
 
     // Handle streaming response
     try {
-      await promptAI(session, userMessage.text, (chunk) => {
+      await promptAI(session, userMessageText, async (chunk) => {
         // Optimistic UI update (partial updates)
+        const chunkPreview = await parseHtml(chunk);
         console.log(currentChat);
         setCurrentChat((prevChat) =>
           prevChat.map((msg) =>
@@ -142,6 +150,7 @@ export default function ChatPreview({ promptAI, session }) {
               ? {
                   ...msg,
                   text: chunk,
+                  preview: chunkPreview,
                 }
               : msg
           )
@@ -239,7 +248,7 @@ export default function ChatPreview({ promptAI, session }) {
                       {chat.context}
                     </div>
                   )}
-                  {chat.text && <div class="text">{chat.text}</div>}
+                  {chat.text && <div class="text">{chat.preview}</div>}
                 </div>
               </div>
             ))}

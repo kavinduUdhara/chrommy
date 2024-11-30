@@ -103,4 +103,34 @@ const getUniqueID = () => {
   return uuidv4();
 }
 
-export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID, getWebsiteContent };
+import { remark } from "remark";
+import remarkRehype from "remark-rehype";
+import remarkDirective from "remark-directive";
+import rehypeStringify from "rehype-stringify";
+const markdownToHtml = async (markdownContent) => {
+  try {
+    const result = await remark()
+      .use(remarkDirective)
+      .use(remarkRehype)
+      .use(rehypeStringify)
+      .process(markdownContent);
+
+    console.log("Final HTML output:", result.toString());
+    return result.toString();
+  } catch (error) {
+    console.error("Error processing markdown:", error);
+  }
+};
+
+import parse from "html-react-parser";
+const parseHtml = async (markdown) => {
+  try {
+    const html = await markdownToHtml(markdown); // Wait for the HTML conversion
+    return parse(html); // Parse the resulting HTML
+  } catch (error) {
+    console.error("Error parsing markdown to HTML:", error);
+    return null; // Return null or a fallback value on error
+  }
+};
+
+export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID, getWebsiteContent, parseHtml };

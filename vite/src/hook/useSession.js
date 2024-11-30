@@ -2,7 +2,6 @@
 
 import { checkEnv } from "../lib/utils";
 
-// Function to create and initialize the session directly
 export const createAiSession = async () => {
   try {
     // Check environment compatibility
@@ -12,7 +11,6 @@ export const createAiSession = async () => {
     const session = await window.ai.languageModel.create();
     return session;
   } catch (err) {
-    console.error("Error initializing AI session:", err);
     throw new Error(err.message || "Unknown error occurred.");
   }
 };

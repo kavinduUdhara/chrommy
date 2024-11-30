@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .def-loading-box {
     @apply relative overflow-hidden rounded-xl mt-2;
   }
