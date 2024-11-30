@@ -97,20 +97,22 @@ const getWebsiteContent = () => {
   });
 };
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const getUniqueID = () => {
   return uuidv4();
-}
+};
 
 import { remark } from "remark";
 import remarkRehype from "remark-rehype";
 import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
 import rehypeStringify from "rehype-stringify";
 const markdownToHtml = async (markdownContent) => {
   try {
     const result = await remark()
       .use(remarkDirective)
+      .use(remarkGfm)
       .use(remarkRehype)
       .use(rehypeStringify)
       .process(markdownContent);
@@ -123,14 +125,64 @@ const markdownToHtml = async (markdownContent) => {
 };
 
 import parse from "html-react-parser";
+import CodeHolder from "./components/codeHolder";
+
 const parseHtml = async (markdown) => {
   try {
-    const html = await markdownToHtml(markdown); // Wait for the HTML conversion
-    return parse(html); // Parse the resulting HTML
+    let html = await markdownToHtml(markdown); // Wait for the HTML conversion
+    html = wrapTable(html); // Wrap tables in a div for styling
+    // Custom transform function for handling <pre><code> elements
+    const transform = (node) => {
+      if (
+        node.name === "pre" &&
+        node.children?.[0]?.name === "code" &&
+        node.children[0].attribs?.class
+      ) {
+        const langClass = node.children[0].attribs.class; // e.g., "language-python"
+        const language = langClass.replace("language-", ""); // Extract language name
+        const codeContent = node.children[0].children
+          ?.map((child) => child.data)
+          .join(""); // Combine text content
+
+        // Replace <pre><code> with the CodeHolder component
+        return (
+          <CodeHolder lang={language}>
+            <pre>
+              <code>{codeContent}</code>
+            </pre>
+          </CodeHolder>
+        );
+      }
+    };
+
+    // Use the transform function during parsing
+    return parse(html, { replace: transform });
   } catch (error) {
     console.error("Error parsing markdown to HTML:", error);
     return null; // Return null or a fallback value on error
   }
 };
 
-export { loadTheActiveTabInfo, checkFaviconBrightness, getGreeting, getUniqueID, getWebsiteContent, parseHtml };
+const wrapTable = (html) => {
+  if (html === ""){
+    return "";
+  }
+  if (typeof html !== "string") {
+    throw new Error("Input must be a string containing HTML.");
+  }
+
+  return html.replace(
+    /<table[^>]*>[\s\S]*?<\/table>/g, // Match <table>...</table> including their content
+    (match) => `<div class="table-holder">${match}</div>`
+  );
+}
+
+
+export {
+  loadTheActiveTabInfo,
+  checkFaviconBrightness,
+  getGreeting,
+  getUniqueID,
+  getWebsiteContent,
+  parseHtml,
+};

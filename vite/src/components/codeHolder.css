@@ -1,0 +1,21 @@
+.code-holder{
+    @apply bg-slate-100 p-1 rounded-lg flex flex-col gap-1 overflow-hidden shadow w-full duration-300;
+}
+.code-holder .code-title{
+    @apply flex justify-between select-none px-1;
+}
+.code-holder .code-title .code-lang{
+    @apply flex items-center gap-1;
+}
+.code-holder .code-title .ac-btns{
+    @apply flex gap-1;
+}
+.code-holder .code-title .ac-btns button{
+    @apply flex gap-1 items-center px-2 rounded-md bg-opacity-70 hover:bg-opacity-100 duration-300 hover:bg-white;
+}
+.code-holder .code{
+    @apply bg-white overflow-hidden rounded-md p-1 shadow-sm;
+}
+.code-holder .code pre{
+    @apply p-2 overflow-auto;
+}

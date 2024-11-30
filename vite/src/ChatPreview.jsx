@@ -88,7 +88,9 @@ export default function ChatPreview({ promptAI, session }) {
     });
   };
 
-  useEffect(() => {console.log("currentChat", currentChat)}, [currentChat])
+  useEffect(() => {
+    console.log("currentChat", currentChat);
+  }, [currentChat]);
   const handelSubmitButton = async () => {
     if (!textBox.text && !textBox.cmds) return;
 
@@ -165,9 +167,7 @@ export default function ChatPreview({ promptAI, session }) {
       // Final error message update
       setCurrentChat((prevChat) =>
         prevChat.map((msg) =>
-          msg.id === aiMessageId
-            ? { ...msg, text: error.message }
-            : msg
+          msg.id === aiMessageId ? { ...msg, text: error.message } : msg
         )
       );
     }
