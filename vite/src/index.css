@@ -59,8 +59,23 @@ td {
   @apply px-2;
 }
 
+.chat-box-holder ul {
+  @apply space-y-1 list-disc list-inside;
+}
+.chat-box-holder :where(ul>li)::marker{
+  @apply text-gray-600;
+}
 
+.chat-box-holder ol {
+  @apply space-y-4 list-decimal list-inside;
+}
 
+.chat-box-holder p code{
+  @apply bg-slate-100 px-1 rounded-md
+}
+.chat-box-holder li code{
+  @apply bg-slate-100 px-1 rounded-md
+}
 
 .def-loading-box {
     @apply relative overflow-hidden rounded-xl mt-2;

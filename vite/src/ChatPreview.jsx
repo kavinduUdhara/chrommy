@@ -167,7 +167,7 @@ export default function ChatPreview({ promptAI, session }) {
       // Final error message update
       setCurrentChat((prevChat) =>
         prevChat.map((msg) =>
-          msg.id === aiMessageId ? { ...msg, text: error.message } : msg
+          msg.id === aiMessageId ? { ...msg, text: error.message, preview: error.message } : msg
         )
       );
     }
@@ -248,7 +248,7 @@ export default function ChatPreview({ promptAI, session }) {
                       {chat.context}
                     </div>
                   )}
-                  {chat.text && <div class="text">{chat.preview}</div>}
+                  {chat.text && <div class="text">{chat.user ? chat.text : chat.preview}</div>}
                 </div>
               </div>
             ))}

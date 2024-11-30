@@ -6,6 +6,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+//desided to not to use more advanced due to incresed response time: https://chatgpt.com/share/674b6061-baa0-800b-bc6e-1e38b5c5c919
 const extractPageDataAsMarkdown = () => {
   // Select the <article> tag if it exists, otherwise fall back to the whole document
   const container = document.querySelector("article") || document.body;

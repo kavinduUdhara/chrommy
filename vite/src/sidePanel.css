@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&family=Noto+Sans+KR:wght@500&family=Noto+Sans:wght@500&display=swap');
 
 .main-holder {
   @apply flex flex-col items-center h-svh overflow-x-hidden relative;
@@ -53,17 +54,13 @@
 .greeting-holder .text > * {
   @apply duration-300 drop-shadow-md;
   color: #1aa7ec;
-  background-image: linear-gradient(
-    135deg,
-    #1aa7ec 12%,
-    #1e2f97 45%,
-    #0a88b2 80%
-  );
+  background: linear-gradient(74deg, #4285f4 10%, #9b72cb 50%, #d96570 80%, #d96570 90%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
   animation: gradientShift 10s infinite ease-in-out;
+  font-family: Google Sans, Helvetica Neue, sans-serif;
 }
 @keyframes gradientShift {
   0% {
@@ -183,7 +180,10 @@
   @apply px-1 rounded-md mx-1 shadow-sm first:ml-0 bg-white;
 }
 .chat-history-holder .chat .text {
-  @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3;
+  @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3 overflow-hidden;
+}
+.chat-history-holder .chat.user .text {
+  @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3 overflow-hidden whitespace-pre-wrap;
 }
 .chat-history-holder .chat.system .text {
   @apply p-1 px-2 text-base bg-none bg-opacity-0 rounded-md self-stretch;
