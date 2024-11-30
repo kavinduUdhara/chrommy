@@ -2,6 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+.chat-box-holder h1 {
+  @apply text-2xl font-bold;
+}
+.chat-box-holder h2 {
+  @apply text-xl font-bold;
+}
+.chat-box-holder h3 {
+  @apply font-bold text-lg;
+}
+.chat-box-holder h4 {
+  @apply text-base text-slate-700 font-bold;
+}
+.chat-box-holder h5 {
+  @apply text-base text-slate-600 underline font-bold;
+}
+.chat-box-holder h6 {
+  @apply text-sm text-slate-600 font-bold;
+}
+.chat-box-holder p {
+  @apply text-base text-justify;
+}
+.chat-box-holder a {
+  @apply text-gray-700 underline underline-offset-1;
+}
+.chat-box-holder a::after {
+  content: "";
+  background: url("data:image/svg+xml,%3Csvg stroke='currentColor' fill='none' stroke-width='2' viewBox='0 0 24 24' stroke-linecap='round' stroke-linejoin='round' height='200px' width='200px' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' x2='21' y1='14' y2='3'%3E%3C/line%3E%3C/svg%3E") no-repeat center;
+  @apply w-4 h-4 inline-block ml-1;
+  background-size: contain;
+}
+.img-holder img {
+  @apply rounded-md max-w-xl overflow-hidden;
+}
+
+.table-holder {
+  @apply w-full overflow-x-auto rounded-lg;
+}
+
+table,
+th,
+td {
+  @apply border-black border-collapse w-fit;
+  border: 1px solid black;
+}
+
+table {
+  @apply rounded-md sm:mx-4 mx-2 max-w-lg overflow-x-auto;
+  outline: 1px solid black;
+  outline-offset: -1px;
+  overflow: hidden;
+}
+
+th,
+td {
+  @apply px-2;
+}
+
+
+
+
 .def-loading-box {
     @apply relative overflow-hidden rounded-xl mt-2;
   }

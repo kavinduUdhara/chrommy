@@ -7,9 +7,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 const extractPageDataAsMarkdown = () => {
-  // Select all relevant elements in the document flow
+  // Select the <article> tag if it exists, otherwise fall back to the whole document
+  const container = document.querySelector("article") || document.body;
+
+  // Select all relevant elements within the container
   const elements = Array.from(
-    document.querySelectorAll("h1, h2, h3, p, ul, ol")
+    container.querySelectorAll("h1, h2, h3, p, ul, ol")
   );
 
   // Map elements to structured data
@@ -29,7 +32,7 @@ const extractPageDataAsMarkdown = () => {
 
     return {
       tag: el.tagName.toLowerCase(), // Get the tag type (e.g., h1, h2, p, ul, ol)
-      text: textContent, // Extracted and cleaned up text content
+      text: textContent, // Extracted and cleaned-up text content
     };
   });
 
@@ -66,6 +69,7 @@ const extractPageDataAsMarkdown = () => {
 
   return markdown.trim(); // Return the formatted Markdown text
 };
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "extractData") {

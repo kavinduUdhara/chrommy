@@ -183,7 +183,7 @@
   @apply px-1 rounded-md mx-1 shadow-sm first:ml-0 bg-white;
 }
 .chat-history-holder .chat .text {
-  @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch;
+  @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3;
 }
 .chat-history-holder .chat.system .text {
   @apply p-1 px-2 text-base bg-none bg-opacity-0 rounded-md self-stretch;
@@ -210,6 +210,7 @@
 }
 ::-webkit-scrollbar {
   width: 6px;
+  height: 5px;
   z-index: 100;
 }
 ::-webkit-scrollbar-track {
