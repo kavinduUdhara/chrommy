@@ -127,3 +127,8 @@ td {
   .def-img-with-loading {
     @apply rounded-md max-w-lg bg-slate-100 h-44 select-none;
   }
+  @layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}

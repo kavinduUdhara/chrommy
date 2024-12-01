@@ -293,23 +293,27 @@ export default function ChatPreview({ promptAI, session }) {
           </button>
         </div>
         <div className="chat-history-holder">
-          <div className="tob-bar">
-            <div className="search">
-              <input type="text" placeholder="Search" />
-            </div>
-            <button>Filter</button>
-          </div>
-          <div className="chat-list">
-            <div className="list">
-              <div className="info">
-                <div className="title">I wanna learn more about x</div>
-                <div className="more-info">
-                  <div className="domain">www.youtube.com</div>
-                  <div className="date">2 days ago</div>
-                </div>
+          <div className="chat-history">
+            <div className="tob-bar">
+              <div className="search">
+                <input type="text" placeholder="Search" />
               </div>
-              <div className="ac-btns">
-                <button><BsThreeDots /></button>
+              <button>Filter</button>
+            </div>
+            <div className="chat-list" >
+              <div className="list">
+                <div className="info">
+                  <div className="title">I wanna learn more about x</div>
+                  <div className="more-info">
+                    <div className="domain">www.youtube.com</div>
+                    <div className="date">2 days ago</div>
+                  </div>
+                </div>
+                <div className="ac-btns">
+                  <button>
+                    <BsThreeDots />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

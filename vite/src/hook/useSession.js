@@ -1,6 +1,6 @@
 // src/hook/useSession.js
 
-import { checkEnv } from "../lib/utils";
+import { checkEnv } from "../lib/setAI";
 
 export const createAiSession = async () => {
   try {

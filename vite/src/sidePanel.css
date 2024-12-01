@@ -150,9 +150,14 @@
 .page-info-holder .top-title-bar .right .ac-btns button{
   @apply duration-300 hover:shadow-md w-7 h-7 flex items-center justify-center hover:bg-white;
 }
-
+.chat-history-holder{
+  @apply absolute w-full p-2 h-full overflow-hidden flex flex-col items-center z-30 bg-white bg-opacity-50 backdrop-blur-sm;
+}
+.chat-history-holder .chat-history{
+  @apply bg-slate-500 max-w-md p-3 pt-16 rounded-xl w-full h-full;
+}
 .chat-box-list-holder {
-  @apply w-full max-w-xl flex flex-col gap-4 mt-3 px-4 text-base z-40 pb-32 pt-4 data-[chatOpen=true]:pt-16 duration-0;
+  @apply w-full max-w-xl flex flex-col gap-4 mt-3 px-4 text-base z-20 pb-32 pt-4 data-[chatOpen=true]:pt-16 duration-0;
 }
 .chat-box-list-holder .chat-box-holder {
   @apply w-full flex justify-end;
@@ -217,7 +222,7 @@
 }
 
 .chat-box-send-holder {
-  @apply w-11/12 max-w-xl flex flex-col gap-2 fixed bottom-1 z-50;
+  @apply w-11/12 max-w-xl flex flex-col gap-2 fixed bottom-1 z-[29];
 }
 .chat-box-send-holder .context {
   @apply bg-blue-100 p-2 px-2 mx-2 rounded-md pb-3 -mb-4 *:line-clamp-2 select-none shadow text-sm flex justify-between items-center gap-1;
