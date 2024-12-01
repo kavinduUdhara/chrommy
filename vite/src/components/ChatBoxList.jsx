@@ -3,9 +3,9 @@ import { GoBug } from "react-icons/go";
 
 import GeminiSVG from "./Gemini";
 
-export default function ChatHistory({ currentChat, chatOpen, textBoxActive, AIError, ongoingChat=true }) {
+export default function ChatBoxList({ currentChat, chatOpen, textBoxActive, AIError, ongoingChat=true }) {
   return (
-    <div class="chat-history-holder" data-chatOpen={chatOpen}>
+    <div class="chat-box-list-holder" data-chatOpen={chatOpen}>
       {currentChat.length > 0 &&
         currentChat.map((chat) => (
           <div

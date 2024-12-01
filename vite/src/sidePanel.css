@@ -30,10 +30,13 @@
   @apply p-2 text-base rounded-2xl shadow-md;
 }
 .greeting-holder {
-  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300;
+  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300 select-none;
 }
 .greeting-holder > img {
   @apply absolute drop-shadow-lg;
+}
+.greeting-holder .gemini-logo{
+  @apply flex items-center bg-white px-1 rounded-full text-xs absolute top-0 left-4 shadow-md duration-300 select-none;
 }
 .greeting-holder .img-light {
   @apply w-32 -top-20 right-0;
@@ -148,68 +151,68 @@
   @apply duration-300 hover:shadow-md w-7 h-7 flex items-center justify-center hover:bg-white;
 }
 
-.chat-history-holder {
+.chat-box-list-holder {
   @apply w-full max-w-xl flex flex-col gap-4 mt-3 px-4 text-base z-40 pb-32 pt-4 data-[chatOpen=true]:pt-16 duration-0;
 }
-.chat-history-holder .chat-box-holder {
+.chat-box-list-holder .chat-box-holder {
   @apply w-full flex justify-end;
 }
-.chat-history-holder .chat-box-holder.system{
+.chat-box-list-holder .chat-box-holder.system{
   @apply justify-start;
 }
-.chat-history-holder .chat-box-holder .profile{
+.chat-box-list-holder .chat-box-holder .profile{
   @apply bg-white min-h-5 max-h-5 min-w-6 flex items-center justify-center rounded-full mt-2;
 }
-.chat-history-holder .chat-box-holder .profile svg{
+.chat-box-list-holder .chat-box-holder .profile svg{
   @apply w-full h-full;
 }
-.chat-history-holder .chat {
+.chat-box-list-holder .chat {
   @apply max-w-[80%] self-start p-0 px-0 rounded-md overflow-hidden flex  flex-col items-end;
 }
-.chat-history-holder .chat.system {
+.chat-box-list-holder .chat.system {
   @apply max-w-[100%];
 }
-.chat-history-holder .chat.user {
+.chat-box-list-holder .chat.user {
   @apply self-end shadow-sm;
 }
-.chat-history-holder .chat .context {
+.chat-box-list-holder .chat .context {
   @apply bg-blue-50 p-1 px-2 text-sm rounded-md select-none;
 }
-.chat-history-holder .chat .context .cmd {
+.chat-box-list-holder .chat .context .cmd {
   @apply px-1 rounded-md mx-1 shadow-sm first:ml-0 bg-white;
 }
-.chat-history-holder .chat .text {
+.chat-box-list-holder .chat .text {
   @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3 overflow-hidden;
 }
-.chat-history-holder .chat.user .text {
+.chat-box-list-holder .chat.user .text {
   @apply p-1 px-2 text-base bg-slate-50 rounded-md self-stretch space-y-3 overflow-hidden whitespace-pre-wrap;
 }
-.chat-history-holder .chat.system .text {
+.chat-box-list-holder .chat.system .text {
   @apply p-1 px-2 text-base bg-none bg-opacity-0 rounded-md self-stretch;
   box-shadow: none !important;
 }
-.chat-history-holder .chat.system.error{
+.chat-box-list-holder .chat.system.error{
   @apply bg-red-50 w-full text-red-700 border border-red-700 p-1;
 }
-.chat-history-holder .chat.system.error .action-btns{
+.chat-box-list-holder .chat.system.error .action-btns{
   @apply flex flex-wrap items-center gap-2;
 }
-.chat-history-holder .chat.system.error .action-btns button{
+.chat-box-list-holder .chat.system.error .action-btns button{
   @apply bg-white text-red-700 flex items-center data-[primary=true]:bg-red-700 data-[primary=true]:text-white gap-1 p-1 px-2 rounded-md;
 }
-.chat-history-holder .chat.system.error .action-btns button svg{
+.chat-box-list-holder .chat.system.error .action-btns button svg{
   @apply w-4 h-4;
 }
-.chat-history-holder .start-a-new-chat{
+.chat-box-list-holder .start-a-new-chat{
   @apply w-9/12 self-center flex items-center py-5 relative mt-4;
 }
-.chat-history-holder .start-a-new-chat .hr{
+.chat-box-list-holder .start-a-new-chat .hr{
   @apply w-full h-[2px] bg-slate-200 rounded-full z-0;
 }
-.chat-history-holder .start-a-new-chat button{
+.chat-box-list-holder .start-a-new-chat button{
   @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 px-2 rounded-full shadow flex gap-1 items-center text-xs z-10 flex-nowrap;
 }
-.chat-history-holder .start-a-new-chat button p{
+.chat-box-list-holder .start-a-new-chat button p{
   @apply drop-shadow-none text-nowrap;
 }
 

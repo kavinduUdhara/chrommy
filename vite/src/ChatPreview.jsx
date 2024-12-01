@@ -7,8 +7,9 @@ import "./sidePanel.css";
 import { TbSend2 } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 import { PiArrowDownRightBold } from "react-icons/pi";
+import { BsThreeDots } from "react-icons/bs";
 
-import ChatHistory from "./components/ChatHistory";
+import ChatBoxList from "./components/ChatBoxList";
 import TopTitleBar from "./components/TobTitleBar";
 import {
   loadTheActiveTabInfo,
@@ -18,8 +19,14 @@ import {
   getWebsiteContent,
   parseHtml,
 } from "./AppFunctions";
-import GeminiSVG from "./components/Gemini";
 import useAutoResizeTextBox from "./hook/useAutoResizeTextBox";
+import GeminiSVG from "./components/Gemini";
+
+import {
+  createNewChat,
+  updateChatByID,
+  updateErrorByID,
+} from "./lib/chatHistoryDB";
 
 export default function ChatPreview({ promptAI, session }) {
   const textareaRef = useRef(null);
@@ -31,6 +38,7 @@ export default function ChatPreview({ promptAI, session }) {
     favicon: "",
     isFaviconBright: false,
   });
+  const [tabInfoLoaing, setTabInfoLoading] = useState(true);
   const [textBox, setTextBox] = useState({
     text: "",
     cmds: null,
@@ -46,6 +54,7 @@ export default function ChatPreview({ promptAI, session }) {
     message: "",
     id: null,
   });
+  const [currentChatId, setCurrentChatId] = useState(null);
 
   //load the activeTab info
   useEffect(() => {
@@ -53,12 +62,14 @@ export default function ChatPreview({ promptAI, session }) {
       try {
         const tabInfo = await loadTheActiveTabInfo();
         setTabInfo(tabInfo);
+        setTabInfoLoading(false);
         if (tabInfo.favicon) {
           const isFaviconBright = await checkFaviconBrightness(tabInfo.favicon);
           setTabInfo((prevTabInfo) => ({ ...prevTabInfo, isFaviconBright }));
         }
       } catch (error) {
         console.error("Error loading tab info:", error);
+        setTabInfoLoading(false);
       }
     };
 
@@ -72,6 +83,45 @@ export default function ChatPreview({ promptAI, session }) {
       }
     }
   }, [currentChat]);
+
+  useEffect(() => {
+    const updateChat = async () => {
+      if (currentChat.length > 0) {
+        if (!currentChatId) {
+          console.log("making new id");
+          const chatID = getUniqueID();
+          setCurrentChatId(chatID);
+          await createNewChat({
+            domain: tabInfo.domain || "null",
+            title: getTitle(),
+            id: chatID,
+          });
+        } else {
+          await updateChatByID(currentChatId, currentChat);
+          if (AIError) {
+            await updateErrorByID(currentChatId, AIError);
+          }
+        }
+      }
+    };
+
+    // Call the async function
+    if (!tabInfoLoaing) {
+      updateChat();
+    }
+  }, [currentChat, currentChatId, tabInfoLoaing, AIError]);
+
+  const getTitle = (currentChat, tabInfo) => {
+    if (currentChat?.[0]?.text) {
+      // If text is present, get the first 15 characters
+      return currentChat[0].text.slice(0, 15);
+    } else if (currentChat?.[0]?.cmds?.includes("summarizeTab")) {
+      // If cmds array includes 'summarizeTab', create the title using domain
+      return `Summarize ${tabInfo?.domain || "null"}`;
+    }
+    // Default case if none of the conditions are met
+    return `Untitled @${tabInfo?.domain || "null"}`;
+  };
 
   const handleSummarizeButton = () => {
     setTextBox({
@@ -182,6 +232,9 @@ export default function ChatPreview({ promptAI, session }) {
     <>
       <div className={`main-holder ${chatPreAnimation ? "chat-open" : ""}`}>
         <div className="greeting-holder" data-chatOpen={chatOpen}>
+          <div className="gemini-logo">
+            <p className="def-nano-logo-txt">Gemini Nano</p>
+          </div>
           <img src="./img/light-bulb.png" className="img-light" />
           <img src="./img/chair.png" className="img-chair" />
           <div className="text">
@@ -229,13 +282,45 @@ export default function ChatPreview({ promptAI, session }) {
           <button
             className="ac-btn"
             onClick={handleSummarizeButton}
-            disabled={tabInfo.domain === "www.youtube.com"}
+            disabled={
+              tabInfo.domain === "www.youtube.com" ||
+              !tabInfo.domain ||
+              tabInfo.domain === "null"
+            }
           >
             Summarize
             <PiArrowDownRightBold />
           </button>
         </div>
-        <ChatHistory currentChat={currentChat} AIError={AIError} chatOpen={chatOpen} textBoxActive={textBoxActive} ongoingChat={true}/>
+        <div className="chat-history-holder">
+          <div className="tob-bar">
+            <div className="search">
+              <input type="text" placeholder="Search" />
+            </div>
+            <button>Filter</button>
+          </div>
+          <div className="chat-list">
+            <div className="list">
+              <div className="info">
+                <div className="title">I wanna learn more about x</div>
+                <div className="more-info">
+                  <div className="domain">www.youtube.com</div>
+                  <div className="date">2 days ago</div>
+                </div>
+              </div>
+              <div className="ac-btns">
+                <button><BsThreeDots /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ChatBoxList
+          currentChat={currentChat}
+          AIError={AIError}
+          chatOpen={chatOpen}
+          textBoxActive={textBoxActive}
+          ongoingChat={true}
+        />
         <div className="chat-box-send-holder">
           {(textBox.context || textBox.cmds) && (
             <div class="context">

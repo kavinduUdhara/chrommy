@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/sidePanel/" element={<CurrentChat />} />
-        <Route path="/sidePanel/index.html" element={<Navigate to="/" replace />} />
+        <Route path="/sidePanel/index.html" element={<CurrentChat/>} />
       </Routes>
     </Router>
   );

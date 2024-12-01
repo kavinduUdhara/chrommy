@@ -1,7 +1,8 @@
 import { openDB } from "idb";
+import React from "react";
 
 const DB_NAME = "ChatHistoryDB";
-const DB_VERSION = 1;
+const DB_VERSION = 4;
 const STORE_NAME = "chats";
 
 // Initialize the database
@@ -10,33 +11,40 @@ const initDB = async () => {
     upgrade(db) {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, {
-          keyPath: "id",
-          autoIncrement: true,
+          keyPath: "id", // Use the provided 'id' instead of auto-increment
         });
+
+        // Create index on 'modifiedAt' field
         store.createIndex("modifiedAt", "modifiedAt", { unique: false });
+
+        // Create index on 'domain' field
+        store.createIndex("domain", "domain", { unique: false });
       }
     },
   });
 };
 
-// Create a new chat
+// Create a new chat with custom 'id'
 export const createNewChat = async ({
+  id, // Pass 'id' explicitly
   domain,
   title,
-  chatData = {},
+  chatData = [],
   error = null,
 }) => {
   const db = await initDB();
   const timestamp = Date.now();
-  const id = await db.add(STORE_NAME, {
+  const chat = {
+    id, // Use the provided 'id'
     createdAt: timestamp,
     modifiedAt: timestamp,
     domain,
     title,
     chatData,
     error,
-  });
-  return id;
+  };
+  await db.add(STORE_NAME, chat); // Add the chat using the provided 'id'
+  return id; // Return the provided 'id'
 };
 
 // Update chat by ID
@@ -44,10 +52,21 @@ export const updateChatByID = async (id, chatData) => {
   const db = await initDB();
   const chat = await db.get(STORE_NAME, id);
   if (!chat) throw new Error(`Chat with ID ${id} not found`);
-  chat.chatData = chatData;
+
+  // Sanitize the chatData array to ensure it's serializable and remove 'preview'
+  chat.chatData = chatData.map(({ user, text, context, cmds }) => ({
+    user,
+    text,
+    context,
+    cmds,
+    // Do not include preview
+  }));
+  console.log("chat in DB", chat);
+
   chat.modifiedAt = Date.now();
   await db.put(STORE_NAME, chat);
 };
+
 
 // Update error by ID
 export const updateErrorByID = async (id, error) => {
