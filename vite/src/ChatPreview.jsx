@@ -8,6 +8,8 @@ import { TbSend2 } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 import { PiArrowDownRightBold } from "react-icons/pi";
 
+import ChatHistory from "./components/ChatHistory";
+
 import TopTitleBar from "./components/TobTitleBar";
 import {
   loadTheActiveTabInfo,
@@ -36,6 +38,11 @@ export default function ChatPreview({ promptAI, session }) {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatPreAnimation, setChatPreAnimation] = useState(false);
   const [currentChat, setCurrentChat] = useState([]);
+  const [AIError, setAIError] = useState({
+    error: false,
+    message: "",
+    id: null,
+  });
 
   //load the activeTab info
   useEffect(() => {
@@ -93,6 +100,7 @@ export default function ChatPreview({ promptAI, session }) {
   }, [currentChat]);
   const handelSubmitButton = async () => {
     if (!textBox.text && !textBox.cmds) return;
+    if (!textBoxActive) return;
 
     setTextBoxActive(false);
 
@@ -162,14 +170,8 @@ export default function ChatPreview({ promptAI, session }) {
       console.log("Streaming completed.");
       setTextBoxActive(true);
     } catch (error) {
-      console.error("Error during streaming response:", error.message);
-
-      // Final error message update
-      setCurrentChat((prevChat) =>
-        prevChat.map((msg) =>
-          msg.id === aiMessageId ? { ...msg, text: error.message, preview: error.message } : msg
-        )
-      );
+      console.error("Error during streaming response:", error);
+      setAIError({ error: true, message: error.message, id: aiMessageId });
     }
   };
 
@@ -221,38 +223,16 @@ export default function ChatPreview({ promptAI, session }) {
               />
             </div>
           )}
-          <button className="ac-btn" onClick={handleSummarizeButton}>
+          <button
+            className="ac-btn"
+            onClick={handleSummarizeButton}
+            disabled={tabInfo.domain === "www.youtube.com"}
+          >
             Summarize
             <PiArrowDownRightBold />
           </button>
         </div>
-        <div class="chat-history-holder" data-chatOpen={chatOpen}>
-          {currentChat.length > 0 &&
-            currentChat.map((chat) => (
-              <div
-                className={`chat-box-holder ${chat.user ? "user" : "system"}`}
-              >
-                {!chat.user && (
-                  <div className="profile">
-                    <GeminiSVG />
-                  </div>
-                )}
-                <div className={`chat ${chat.user ? "user" : "system"}`}>
-                  {(chat.context || chat.cmds) && (
-                    <div class="context">
-                      {chat.cmds &&
-                        chat.cmds.length > 0 &&
-                        chat.cmds.map((cmd) => (
-                          <span class="cmd">{cmd}</span>
-                        ))}{" "}
-                      {chat.context}
-                    </div>
-                  )}
-                  {chat.text && <div class="text">{chat.user ? chat.text : chat.preview}</div>}
-                </div>
-              </div>
-            ))}
-        </div>
+        <ChatHistory currentChat={currentChat} AIError={AIError} chatOpen={chatOpen} textBoxActive={textBoxActive} ongoingChat={true}/>
         <div className="chat-box-send-holder">
           {(textBox.context || textBox.cmds) && (
             <div class="context">

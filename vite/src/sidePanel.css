@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&family=Noto+Sans+KR:wght@500&family=Noto+Sans:wght@500&display=swap');
 
 .main-holder {
   @apply flex flex-col items-center h-svh overflow-x-hidden relative;
@@ -98,7 +97,7 @@
   @apply text-xs max-w-24 text-nowrap text-ellipsis overflow-hidden;
 }
 .page-info-holder .ac-btn {
-  @apply bg-blue-50  p-1 px-2 rounded-lg flex items-center gap-1 text-base select-none cursor-pointer;
+  @apply bg-blue-50  p-1 px-2 rounded-lg flex items-center gap-1 text-base select-none cursor-pointer disabled:bg-slate-50 disabled:cursor-not-allowed disabled:grayscale;
 }
 .page-info-holder .ac-btn svg {
   @apply w-3 h-3;
@@ -188,6 +187,30 @@
 .chat-history-holder .chat.system .text {
   @apply p-1 px-2 text-base bg-none bg-opacity-0 rounded-md self-stretch;
   box-shadow: none !important;
+}
+.chat-history-holder .chat.system.error{
+  @apply bg-red-50 w-full text-red-700 border border-red-700 p-1;
+}
+.chat-history-holder .chat.system.error .action-btns{
+  @apply flex flex-wrap items-center gap-2;
+}
+.chat-history-holder .chat.system.error .action-btns button{
+  @apply bg-white text-red-700 flex items-center data-[primary=true]:bg-red-700 data-[primary=true]:text-white gap-1 p-1 px-2 rounded-md;
+}
+.chat-history-holder .chat.system.error .action-btns button svg{
+  @apply w-4 h-4;
+}
+.chat-history-holder .start-a-new-chat{
+  @apply w-9/12 self-center flex items-center py-5 relative mt-4;
+}
+.chat-history-holder .start-a-new-chat .hr{
+  @apply w-full h-[2px] bg-slate-200 rounded-full z-0;
+}
+.chat-history-holder .start-a-new-chat button{
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 px-2 rounded-full shadow flex gap-1 items-center text-xs z-10 flex-nowrap;
+}
+.chat-history-holder .start-a-new-chat button p{
+  @apply drop-shadow-none text-nowrap;
 }
 
 .chat-box-send-holder {

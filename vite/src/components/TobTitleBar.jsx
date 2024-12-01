@@ -19,7 +19,7 @@ export default function TopTitleBar({ chatOpen, tabURL }) {
             <div className="nano-logo-holder">
               <div className="nano-logo">
                 <GeminiSVG />
-                <p>Gemini Nano</p>
+                <p className="def-nano-logo-txt">Gemini Nano</p>
               </div>
             </div>
           </div>

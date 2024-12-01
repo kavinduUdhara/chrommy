@@ -77,6 +77,29 @@ td {
   @apply bg-slate-100 px-1 rounded-md
 }
 
+.def-nano-logo-txt{
+  @apply duration-300 drop-shadow-md;
+  color: #1aa7ec;
+  background: linear-gradient(74deg, #4285f4 10%, #9b72cb 50%, #d96570 80%, #d96570 90%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 10s infinite ease-in-out;
+  font-family: Google Sans, Helvetica Neue, sans-serif;
+}
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .def-loading-box {
     @apply relative overflow-hidden rounded-xl mt-2;
   }
