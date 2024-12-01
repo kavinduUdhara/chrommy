@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./sidePanel.css";
@@ -9,7 +9,6 @@ import { RxCross2 } from "react-icons/rx";
 import { PiArrowDownRightBold } from "react-icons/pi";
 
 import ChatHistory from "./components/ChatHistory";
-
 import TopTitleBar from "./components/TobTitleBar";
 import {
   loadTheActiveTabInfo,
@@ -20,8 +19,12 @@ import {
   parseHtml,
 } from "./AppFunctions";
 import GeminiSVG from "./components/Gemini";
+import useAutoResizeTextBox from "./hook/useAutoResizeTextBox";
 
 export default function ChatPreview({ promptAI, session }) {
+  const textareaRef = useRef(null);
+  useAutoResizeTextBox(textareaRef);
+
   const [tabInfo, setTabInfo] = useState({
     tab: "",
     domain: "",
@@ -252,6 +255,7 @@ export default function ChatPreview({ promptAI, session }) {
           <div className="chat-box-send">
             <textarea
               id="chat-input"
+              ref={textareaRef}
               disabled={!textBoxActive}
               rows="1"
               placeholder={textBox.placeholder}

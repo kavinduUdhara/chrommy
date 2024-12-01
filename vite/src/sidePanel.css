@@ -232,7 +232,7 @@
   @apply w-full bg-transparent justify-self-stretch focus:outline-none focus:ring-0 p-2 px-5 overflow-auto;
 }
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
   height: 5px;
   z-index: 100;
 }
@@ -240,11 +240,13 @@
   @apply mt-3 mb-3;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(174, 174, 174, 0.644);
-  @apply rounded-full cursor-auto mt-5 mb-5 duration-200;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(174, 174, 174);
+  @apply rounded-full cursor-auto mt-5 mb-5 duration-300 bg-slate-300 hover:bg-slate-400;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-top: 90px;
+  border-radius: 8px;
+  box-shadow: none;
+  min-height: 50px;
 }
 .chat-box-send.multiline {
   @apply rounded-lg;

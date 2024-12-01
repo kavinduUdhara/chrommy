@@ -1,7 +1,17 @@
-export default function App() {
-    return(
-        <div>
-            <h1>App</h1>
-        </div>
-    );
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import CurrentChat from './CurrentChat';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/sidePanel/" element={<CurrentChat />} />
+        <Route path="/sidePanel/index.html" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
+  );
 }
+
+export default App;
