@@ -7,6 +7,7 @@ import { CgMenuLeftAlt } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
 import { AlertRedirectToGitHub } from "./AlertRedirectToGItHub";
+import { SettingsPopUp } from "./SettingsPopUp";
 
 export default function TopTitleBar({
   chatOpen,
@@ -43,9 +44,11 @@ export default function TopTitleBar({
       </div>
       <div className="right">
         <div className="ac-btns">
-          <button>
-            <IoSettingsOutline />
-          </button>
+          <SettingsPopUp>
+            <button>
+              <IoSettingsOutline />
+            </button>
+          </SettingsPopUp>
           <AlertRedirectToGitHub>
             <button>
               <FiGithub />

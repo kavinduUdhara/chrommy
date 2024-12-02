@@ -31,16 +31,16 @@ export function AlertRedirectToGitHub({ children }) {
           <IoClose />
         </AlertDialogCancel>
         <AlertDialogHeader className="flex flex-col items-start w-full gap-2 pt-5">
-          <AlertDialogTitle>
+          <AlertDialogTitle className="flex flex-col gap-5 items-center sm:flex-row duration-300">
             <div className="overflow-hidden max-w-36 rounded-full p-[1px] bg-white shadow-md">
               <img src={profileImg} alt="Profile" />
             </div>
-            <div className="-space-y-[1px]">
+            <div className="-space-y-[1px] flex flex-col items-start">
               <div className="text-slate-500 text-sm">github.com/</div>
               <div className="text-lg font-bold">kavinduUdhara</div>
             </div>
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="text-justify">
             I’m{" "}
             <a
               href="https://www.linkedin.com/in/kavindu-udhara/"

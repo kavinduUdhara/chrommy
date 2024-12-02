@@ -238,13 +238,13 @@ export default function ChatPreview({ promptAI, session }) {
 
   return (
     <>
-      <div className="left-menu-holder" data-chatOpen={chatOpen}>
+      <div className="left-menu-holder" data-chatOpen={chatPreAnimation}>
         <div className="left-menu">
           <button onClick={toogleSlideBar} data-slideBarOpen={slideBarOpen}>
             <CgMenuLeftAlt />
           </button>
           <div className="gemini-logo">
-            <p className="def-nano-logo-txt">Gemini Nano</p>
+            <p>Gemini Nano</p>
           </div>
         </div>
       </div>
@@ -252,6 +252,7 @@ export default function ChatPreview({ promptAI, session }) {
         <div className="greeting-holder" data-chatOpen={chatOpen}>
           <img src="./img/light-bulb.png" className="img-light" />
           <img src="./img/chair.png" className="img-chair" />
+          <img src="./img/apple-1.png" className="img-apple" />
           <div className="text">
             <h1 className="greeting">{getGreeting()}</h1>
             <p>Welcome to chrommy</p>

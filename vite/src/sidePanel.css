@@ -29,6 +29,8 @@
 .main-holder.chat-open .page-info {
   @apply p-2 text-base rounded-2xl shadow-md;
 }
+
+
 .left-menu-holder{
   @apply flex items-center justify-center fixed top-0 left-0 duration-300 select-none gap-3 z-50 self-center w-full data-[chatOpen=true]:-top-20 data-[chatOpen=true]:scale-0;
 }
@@ -39,7 +41,7 @@
   @apply p-1 rounded-md  flex items-center gap-1 text-base text-slate-600 bg-white shadow hover:shadow-md data-[slideBarOpen=true]:bg-slate-700 data-[slideBarOpen=true]:text-white duration-300;
 }
 .gemini-logo{
-  @apply flex items-center bg-white px-1 rounded-full text-xs shadow-md duration-300 select-none w-fit;
+  @apply flex items-center bg-slate-700 text-white p-[2px] px-2 rounded-full text-xs shadow-md duration-300 select-none w-fit;
 }
 .greeting-holder {
   @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300 select-none;
@@ -52,6 +54,9 @@
 }
 .greeting-holder .img-chair {
   @apply w-48 -bottom-44 -right-28 -rotate-12 duration-300;
+}
+.greeting-holder .img-apple {
+  @apply w-12 top-24 -left-1 -rotate-12 duration-300;
 }
 .greeting-holder .text {
   @apply w-fit px-3 -space-y-2 text-[#1e2f97] mt-20;
