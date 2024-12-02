@@ -1,6 +1,7 @@
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import "./ErrorWithOllie.css";
 import { MdFilterListOff } from "react-icons/md";
+import oliImage from "../../assets/oli.png";
 
 export default function ErrorWithOllie({
   title,
@@ -23,7 +24,7 @@ export default function ErrorWithOllie({
   return (
     <div className="not-found">
       {!hideOllie && (
-        <img src="./img/oli.png" className="ollie" />
+        <img src={oliImage} className="ollie" />
       )}
       {title && (
         <h1>{title}</h1>

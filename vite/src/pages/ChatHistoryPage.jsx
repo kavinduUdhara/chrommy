@@ -1,57 +1,105 @@
 import "../sidePanel.css";
 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { IoIosArrowBack } from "react-icons/io";
 
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams,  useNavigate } from "react-router-dom";
 import TopTitleBar from "@/components/TopTitleBar";
 import ChatHistory from "@/components/ChatHistory";
 import ChatBoxList from "@/components/ChatBoxList";
+import { getChatByID } from "@/lib/chatHistoryDB"; // Import the function
+import { parseHtml } from "@/AppFunctions";
+import ErrorWithOllie from "@/components/ErrorWithOllie/ErrorWithOllie";
 
 function ChatHistoryPage() {
+  const navigate = useNavigate();
+
   const { chatID } = useParams();
   const [loading, setLoading] = useState(true);
   const [slideBarOpen, setSlideBarOpen] = useState(false);
   const [currentChat, setCurrentChat] = useState([]);
-  const [AIError, setAIError] = useState(null);
+  const [AIError, setAIError] = useState({
+    error: false,
+    message: "",
+    id: null,
+  });
+  const [chatNotFound, setChatNotFound] = useState(false); // To track if chat is not found
 
   const toogleSlideBar = () => {
     setSlideBarOpen(!slideBarOpen);
   };
 
+  const goBack = () => {
+    navigate(-1); // Navigate to the previous page in the history stack
+  };
+
+  // Fetch chat data by ID when the component mounts
+  useEffect(() => {
+    const fetchChatData = async () => {
+      try {
+        const chat = await getChatByID(chatID);
+
+        // Process the chatData to include 'preview'
+        const processedChatData = await Promise.all(
+          chat.chatData.map(async (item) => ({
+            ...item,
+            preview: await parseHtml(item.text),
+          }))
+        );
+
+        setCurrentChat(processedChatData); // Set processed chat data to state
+        setAIError(chat.error);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching chat:", error);
+        setLoading(false);
+        setChatNotFound(true); // Set flag to show error message
+      }
+    };
+
+    fetchChatData();
+  }, [chatID]);
+
   if (loading) {
     return (
       <div className="main-holder chat-open">
-        <div className="page-info-holder">
-          <div className="page-info">
-            <div className="top-title-bar" data-chatOpen={true}>
-              <div className="left">
-                <div className="def-loading-box w-7 h-7 bg-slate-100"></div>
-                <div className="info">
-                  <div className="title def-loading-box w-32 h-5 bg-slate-100"></div>
-                  <div className="tab def-loading-box min-w-10 h-3"></div>
-                </div>
-              </div>
-              <div className="right">
-                <div className="ac-btns">
-                  <button className="def-loading-box w-7 h-7 bg-sky-100"></button>
-                  <button className="def-loading-box w-7 h-7 bg-sky-100"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="chat-box-list-holder">
-          <div className="loading-chat-data mt-5 flex flex-col">
-            <div className="flex items-center gap-2 shadow-md p-1 px-2 rounded-full w-fit self-center">
-              <AiOutlineLoading3Quarters className="def-loading-svg" />
-              Loading Chat Data
-            </div>
+        <div className="max-w-xl w-full p-3">
+          <button className="def-back-btn self-start" onClick={goBack}>
+            <IoIosArrowBack />
+          </button>
+          <div className="chat-box-list-holder">
+            <ErrorWithOllie
+              loading={true}
+              loadingTitle="Loading Chat Data"
+            ></ErrorWithOllie>
           </div>
         </div>
       </div>
     );
   }
+
+  if (chatNotFound) {
+    return (
+      <div className="main-holder chat-open">
+        <div className="max-w-xl w-full p-3">
+          <button className="def-back-btn self-start" onClick={goBack}>
+            <IoIosArrowBack />
+          </button>
+          <div className="chat-box-list-holder">
+            <ErrorWithOllie
+            customeButtonTitle={"Go Back"}
+            cuttomeButtonAction={goBack}
+            >
+              Sorry, the chat with ID {chatID} does not exist.
+              Please check the ID or contact support if this is an issue.
+            </ErrorWithOllie>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="main-holder chat-open">
       <div className="page-info-holder" data-chatOpen={true}>
@@ -68,6 +116,7 @@ function ChatHistoryPage() {
         slideBarOpen={slideBarOpen}
         chatOpen={true}
         toogleSlideBar={toogleSlideBar}
+        chatData={currentChat}
       />
       <ChatBoxList
         currentChat={currentChat}

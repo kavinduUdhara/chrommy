@@ -4,12 +4,15 @@ import { WebsietsPopUp } from "./WebsitesPopUp";
 import { loadChatList, getUniqueDomains } from "@/lib/chatHistoryDB";
 import { useEffect, useState } from "react";
 import ErrorWithOllie from "./ErrorWithOllie/ErrorWithOllie";
+import { useNavigate } from "react-router-dom";
 
 export default function ChatHistory({
   slideBarOpen,
   chatOpen,
   toogleSlideBar,
 }) {
+  const navigate = useNavigate();
+
   const [chatList, setChatList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredChatList, setFilteredChatList] = useState([]);
@@ -52,6 +55,11 @@ export default function ChatHistory({
     setSearchQuery("");
     setSelectedDomain("");
   };  
+
+  const redirectToChat = (chatID) =>{
+    navigate(`/sidePanel/chat/${chatID}`);
+    toogleSlideBar();
+  };
 
   return (
     <div
@@ -104,7 +112,7 @@ export default function ChatHistory({
             </div>
           ) : (
             filteredChatList.map(({ id, title, domain, modifiedAt }) => (
-              <button key={id} className="list">
+              <button key={id} className="list" onClick={() => redirectToChat(id)}>
                 <div className="info">
                   <div className="title">{title}</div>
                   <div className="more-info">
