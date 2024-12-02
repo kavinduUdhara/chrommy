@@ -5,7 +5,11 @@ import { loadChatList, getUniqueDomains } from "@/lib/chatHistoryDB";
 import { useEffect, useState } from "react";
 import ErrorWithOllie from "./ErrorWithOllie/ErrorWithOllie";
 
-export default function ChatHistory({ slideBarOpen, chatOpen, toogleSlideBar }) {
+export default function ChatHistory({
+  slideBarOpen,
+  chatOpen,
+  toogleSlideBar,
+}) {
   const [chatList, setChatList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredChatList, setFilteredChatList] = useState([]);
@@ -34,11 +38,20 @@ export default function ChatHistory({ slideBarOpen, chatOpen, toogleSlideBar }) 
       chatList.filter(
         ({ title, domain, modifiedAt }) =>
           (title.toLowerCase().includes(query) ||
-            new Date(modifiedAt).toLocaleString().toLowerCase().includes(query)) &&
+            new Date(modifiedAt)
+              .toLocaleString()
+              .toLowerCase()
+              .includes(query)) &&
           (selectedDomain === "" || domain === selectedDomain)
       )
     );
   }, [searchQuery, chatList, selectedDomain]);
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedDomain("");
+  };  
 
   return (
     <div
@@ -61,13 +74,35 @@ export default function ChatHistory({ slideBarOpen, chatOpen, toogleSlideBar }) 
           </div>
           <WebsietsPopUp
             domains={domains}
+            selectedDomain={selectedDomain}
             onSelectDomain={setSelectedDomain} // Pass domain selection handler
           />
         </div>
 
         {/* Chat List */}
         <div className="chat-list">
-          {filteredChatList.length > 0 ? (
+          {chatList.length === 0 ? ( // Check if there are no records in the database
+            <div className="max-w-md w-full self-center">
+              <ErrorWithOllie
+                title={"Chat Hub"}
+                customeButtonTitle="Close Chat Hub"
+                cuttomeButtonAction={toogleSlideBar}
+              >
+                Your conversations will live here.
+              </ErrorWithOllie>
+            </div>
+          ) : filteredChatList.length === 0 ? ( // Check if no records match the filters
+            <div className="max-w-md w-full self-center">
+              <ErrorWithOllie
+                title={"No items found"}
+                clearFilter={true}
+                clearFilterAction={clearFilters}
+              >
+                Oops, we couldn't find what you're looking for—try clearing the
+                filters!
+              </ErrorWithOllie>
+            </div>
+          ) : (
             filteredChatList.map(({ id, title, domain, modifiedAt }) => (
               <button key={id} className="list">
                 <div className="info">
@@ -86,16 +121,6 @@ export default function ChatHistory({ slideBarOpen, chatOpen, toogleSlideBar }) 
                 </div>
               </button>
             ))
-          ) : (
-            <div className="w-full">
-              <ErrorWithOllie
-                title={"No items found"}
-                customeButtonTitle="Close chat history"
-                cuttomeButtonAction={toogleSlideBar}
-              >
-                Chat history will appear here
-              </ErrorWithOllie>
-            </div>
           )}
         </div>
       </div>

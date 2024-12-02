@@ -19,9 +19,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function WebsietsPopUp({ domains = [] }) {
+export function WebsietsPopUp({ domains = [], selectedDomain, onSelectDomain }) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -33,8 +32,8 @@ export function WebsietsPopUp({ domains = [] }) {
           className="w-[100px] justify-between shadow-sm border-none overflow-hidden flex"
         >
           <p className="overflow-hidden max-w-full text-nowrap text-ellipsis">
-            {value
-              ? domains.find((domain) => domain.value === value)?.label
+            {selectedDomain
+              ? domains.find((domain) => domain.value === selectedDomain)?.label
               : "Domain"}
           </p>
           <ChevronsUpDown className="opacity-50" />
@@ -51,7 +50,7 @@ export function WebsietsPopUp({ domains = [] }) {
                   key={domain.value}
                   value={domain.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    onSelectDomain(currentValue === selectedDomain ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
@@ -59,7 +58,7 @@ export function WebsietsPopUp({ domains = [] }) {
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === domain.value ? "opacity-100" : "opacity-0"
+                      selectedDomain === domain.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>
@@ -71,3 +70,4 @@ export function WebsietsPopUp({ domains = [] }) {
     </Popover>
   );
 }
+
