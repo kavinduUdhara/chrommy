@@ -101,3 +101,22 @@ export const loadChatList = async () => {
     }))
     .sort((a, b) => b.modifiedAt - a.modifiedAt);
 };
+
+// Get unique domains from chat data
+export const getUniqueDomains = async () => {
+  const db = await initDB();
+  const tx = db.transaction(STORE_NAME, "readonly");
+  const store = tx.objectStore(STORE_NAME);
+
+  // Use the 'domain' index to fetch all domain values
+  const index = store.index("domain");
+  const domains = await index.getAll();
+
+  // Extract unique domain values
+  const uniqueDomains = [...new Set(domains.map((chat) => chat.domain))];
+
+  return uniqueDomains.map((domain) => ({
+    value: domain,
+    label: domain.charAt(0).toUpperCase() + domain.slice(1), // Capitalize for labels
+  }));
+};
