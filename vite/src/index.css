@@ -150,3 +150,19 @@ td {
 .def-back-btn svg {
   @apply w-4 h-4 duration-300 hover:translate-x-[-2px];
 }
+
+.def-abs-btn-list{
+  @apply flex items-center gap-2 flex-row-reverse fixed right-0 bottom-0 pr-3 pb-3 flex-wrap-reverse z-[29];
+}
+.def-abs-btn-list .def-abs-btn{
+  @apply flex items-center gap-1 p-1 bg-white rounded-md shadow-sm hover:shadow-md duration-300
+}
+.def-abs-btn-list .def-abs-btn.primary{
+  @apply bg-gray-700 text-white px-2
+}
+.def-abs-btn-list .def-abs-btn.del{
+  @apply bg-red-200
+}
+.def-abs-btn-list .def-abs-btn svg{
+  @apply w-5 h-5;
+}

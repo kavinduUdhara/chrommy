@@ -2,8 +2,28 @@ import { BiMessageSquareEdit } from "react-icons/bi";
 import { GoBug } from "react-icons/go";
 
 import GeminiSVG from "./Gemini";
+import { useNavigate, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
-export default function ChatBoxList({ currentChat, chatOpen, textBoxActive, AIError, ongoingChat=true }) {
+export default function ChatBoxList({
+  currentChat,
+  chatOpen,
+  textBoxActive,
+  AIError,
+  ongoingChat = true,
+}) {
+  const navigate = useNavigate();
+
+  const onStartNewChat = () => {
+    console.log("Starting a new chat");
+    navigate("/sidePanel/index.html", { replace: true });
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    console.log(AIError);
+    console.log(currentChat );
+  }, [AIError, currentChat]);
   return (
     <div class="chat-box-list-holder" data-chatOpen={chatOpen}>
       {currentChat.length > 0 &&
@@ -25,7 +45,7 @@ export default function ChatBoxList({ currentChat, chatOpen, textBoxActive, AIEr
                     <button>
                       <GoBug /> Report
                     </button>
-                    <button data-primary={true}>
+                    <button data-primary={true} onClick={onStartNewChat}>
                       <BiMessageSquareEdit /> New Chat
                     </button>
                   </div>
@@ -53,7 +73,7 @@ export default function ChatBoxList({ currentChat, chatOpen, textBoxActive, AIEr
       {currentChat.length > 0 && textBoxActive && (
         <div className="start-a-new-chat">
           <div className="hr"></div>
-          <button>
+          <button onClick={onStartNewChat} aria-label="start a new chat">
             <GeminiSVG />
             <p className="def-nano-logo-txt"> start a new chat</p>
           </button>

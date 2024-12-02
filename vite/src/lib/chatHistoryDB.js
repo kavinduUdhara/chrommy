@@ -30,7 +30,7 @@ export const createNewChat = async ({
   domain,
   title,
   chatData = [],
-  error = null,
+  error = {},
 }) => {
   const db = await initDB();
   const timestamp = Date.now();
@@ -54,11 +54,13 @@ export const updateChatByID = async (id, chatData) => {
   if (!chat) throw new Error(`Chat with ID ${id} not found`);
 
   // Sanitize the chatData array to ensure it's serializable and remove 'preview'
-  chat.chatData = chatData.map(({ user, text, context, cmds }) => ({
+  chat.chatData = chatData.map(({ user, text, context, cmds, time, id }) => ({
+    id,
     user,
     text,
     context,
     cmds,
+    time,
     // Do not include preview
   }));
   console.log("chat in DB", chat);
@@ -75,6 +77,7 @@ export const updateErrorByID = async (id, error) => {
   if (!chat) throw new Error(`Chat with ID ${id} not found`);
   chat.error = error;
   chat.modifiedAt = Date.now();
+  console.log("chat in DB", chat);
   await db.put(STORE_NAME, chat);
 };
 
@@ -119,4 +122,25 @@ export const getUniqueDomains = async () => {
     value: domain,
     label: domain.charAt(0).toUpperCase() + domain.slice(1), // Capitalize for labels
   }));
+};
+
+// Delete all records from the database
+export const deleteAllChats = async () => {
+  const db = await initDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  const store = tx.objectStore(STORE_NAME);
+
+  await store.clear(); // Clear all records from the object store
+  await tx.done; // Ensure the transaction is complete
+  console.log("All chats deleted successfully.");
+};
+
+// Delete a single chat by ID
+export const deleteChatByID = async (id) => {
+  const db = await initDB();
+  const chat = await db.get(STORE_NAME, id);
+  if (!chat) throw new Error(`Chat with ID ${id} not found`);
+  
+  await db.delete(STORE_NAME, id); // Delete the chat by ID
+  console.log(`Chat with ID ${id} has been deleted successfully.`);
 };

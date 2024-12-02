@@ -1,10 +1,18 @@
 import { BsThreeDots } from "react-icons/bs";
 import { IoSearchOutline } from "react-icons/io5";
+import { TbEdit } from "react-icons/tb";
+import { MdOutlineDeleteSweep } from "react-icons/md";
+import { TbHome2 } from "react-icons/tb";
+
 import { WebsietsPopUp } from "./WebsitesPopUp";
 import { loadChatList, getUniqueDomains } from "@/lib/chatHistoryDB";
 import { useEffect, useState } from "react";
 import ErrorWithOllie from "./ErrorWithOllie/ErrorWithOllie";
 import { useNavigate } from "react-router-dom";
+
+import { AlertDialogHolder } from "./Alert";
+import { deleteAllChats } from "@/lib/chatHistoryDB";
+import toast from "react-hot-toast";
 
 export default function ChatHistory({
   slideBarOpen,
@@ -54,11 +62,30 @@ export default function ChatHistory({
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedDomain("");
-  };  
+  };
 
-  const redirectToChat = (chatID) =>{
+  const redirectToChat = (chatID) => {
     navigate(`/sidePanel/chat/${chatID}`);
     toogleSlideBar();
+  };
+
+  const goHomeFullReload = () => {
+    toogleSlideBar();
+    navigate("/idePanel/");
+    // window.location.href = "/sidePanel/";
+  }
+
+  const handleDeleteAll = async () => {
+    const loadingToast = toast.loading("Deleting all chats...");
+    try {
+      await deleteAllChats();
+      toast.success("All chats have been deleted.", { id: loadingToast });
+    } catch (error) {
+      console.error("Error deleting chats:", error);
+      toast.error("Failed to delete chats.", { id: loadingToast });
+    } finally {
+      toogleSlideBar();
+    }
   };
 
   return (
@@ -112,7 +139,11 @@ export default function ChatHistory({
             </div>
           ) : (
             filteredChatList.map(({ id, title, domain, modifiedAt }) => (
-              <button key={id} className="list" onClick={() => redirectToChat(id)}>
+              <button
+                key={id}
+                className="list"
+                onClick={() => redirectToChat(id)}
+              >
                 <div className="info">
                   <div className="title">{title}</div>
                   <div className="more-info">
@@ -130,6 +161,25 @@ export default function ChatHistory({
               </button>
             ))
           )}
+        </div>
+        <div className="def-abs-btn-list">
+          <button className="def-abs-btn primary" aria-label="start a new chat" onClick={goHomeFullReload}>
+            <TbEdit /> New Chat
+          </button>
+          <AlertDialogHolder
+            title="Are you sure you want to delete all records?"
+            descrition="This will permanently delete all your chat records. Once deleted, they cannot be recovered. Are you sure you want to DELETE ALL CHATS?"
+            Dangirous={true}
+            confirmBtnTitle="Delete All Records"
+            onConfirm={handleDeleteAll}
+          >
+            <button className="def-abs-btn del" aria-label="Delete all chat record">
+              <MdOutlineDeleteSweep />
+            </button>
+          </AlertDialogHolder>
+          <button className="def-abs-btn" onClick={goHomeFullReload} aria-label="Go to home page">
+            <TbHome2 />
+          </button>
         </div>
       </div>
     </div>

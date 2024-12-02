@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./sidePanel.css";
@@ -93,6 +94,7 @@ export default function ChatPreview({ promptAI, session }) {
           console.log("making new id");
           const chatID = getUniqueID();
           setCurrentChatId(chatID);
+          window.history.pushState({}, '', `/sidePanel/chat/${chatID}`);
           await createNewChat({
             domain: tabInfo.domain || "null",
             title: getTitle(currentChat, tabInfo),
@@ -100,9 +102,7 @@ export default function ChatPreview({ promptAI, session }) {
           });
         } else {
           await updateChatByID(currentChatId, currentChat);
-          if (AIError) {
-            await updateErrorByID(currentChatId, AIError);
-          }
+          await updateErrorByID(currentChatId, AIError);
         }
       }
     };
@@ -118,7 +118,7 @@ export default function ChatPreview({ promptAI, session }) {
       // If text is present, get the first 25 characters and it it's over 25 add ... at the end
       return currentChat[0].text.length > 25
         ? currentChat[0].text.slice(0, 25) + "..."
-        : currentChat[0].text
+        : currentChat[0].text;
     } else if (currentChat?.[0]?.cmds?.includes("Summarize Tab")) {
       // If cmds array includes 'summarizeTab', create the title using domain
       return `Summarize ${tabInfo?.domain || "null"}`;
@@ -309,7 +309,11 @@ export default function ChatPreview({ promptAI, session }) {
             <PiArrowDownRightBold />
           </button>
         </div>
-        <ChatHistory slideBarOpen={slideBarOpen} chatOpen={chatOpen} toogleSlideBar={toogleSlideBar}/>
+        <ChatHistory
+          slideBarOpen={slideBarOpen}
+          chatOpen={chatOpen}
+          toogleSlideBar={toogleSlideBar}
+        />
         <ChatBoxList
           currentChat={currentChat}
           AIError={AIError}

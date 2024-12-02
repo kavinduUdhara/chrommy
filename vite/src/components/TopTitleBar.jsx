@@ -4,6 +4,7 @@ import { FiGithub } from "react-icons/fi";
 import { BsMenuButtonWide } from "react-icons/bs";
 import GeminiSVG from "./Gemini";
 import { CgMenuLeftAlt } from "react-icons/cg";
+import { useNavigate } from "react-router-dom";
 
 export default function TopTitleBar({
   chatOpen,
@@ -11,6 +12,12 @@ export default function TopTitleBar({
   toogleSlideBar,
   slideBarOpen,
 }) {
+  const navigate = useNavigate();
+
+  const navigateHome = () => {
+    navigate("/sidePanel/");
+  };
+  
   return (
     <div className="top-title-bar" data-chatOpen={chatOpen}>
       <div className="left">
@@ -19,9 +26,9 @@ export default function TopTitleBar({
             <CgMenuLeftAlt />
           </button>
         </div>
-        <div className="info">
+        <button className="info" onClick={navigateHome}>
           <div className="title">
-            <h1>Chrommy</h1>
+            <button>Chrommy</button>
             <div className="nano-logo-holder">
               <div className="nano-logo">
                 <GeminiSVG />
@@ -30,7 +37,7 @@ export default function TopTitleBar({
             </div>
           </div>
           <div className="tab">{tabURL}</div>
-        </div>
+        </button>
       </div>
       <div className="right">
         <div className="ac-btns">

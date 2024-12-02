@@ -178,7 +178,7 @@
   @apply p-1 px-3 pl-8 w-full focus:outline-none;
 }
 .chat-history-holder .chat-list{
-  @apply w-full h-full flex flex-col justify-start overflow-y-auto items-start px-2 gap-2 pt-3 pb-7;
+  @apply w-full h-full flex flex-col justify-start overflow-y-auto items-start px-2 gap-2 pt-3 pb-20;
 }
 .chat-history-holder .chat-list .list{
   @apply w-full flex justify-between items-center p-2 rounded-lg px-3 hover:bg-white duration-300;
