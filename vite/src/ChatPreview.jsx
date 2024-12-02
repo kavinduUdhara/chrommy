@@ -10,7 +10,7 @@ import { PiArrowDownRightBold } from "react-icons/pi";
 import { CgMenuLeftAlt } from "react-icons/cg";
 
 import ChatBoxList from "./components/ChatBoxList";
-import TopTitleBar from "./components/TobTitleBar";
+import TopTitleBar from "./components/TopTitleBar";
 import {
   loadTheActiveTabInfo,
   checkFaviconBrightness,
@@ -115,9 +115,11 @@ export default function ChatPreview({ promptAI, session }) {
 
   const getTitle = (currentChat, tabInfo) => {
     if (currentChat?.[0]?.text) {
-      // If text is present, get the first 15 characters
-      return currentChat[0].text.slice(0, 15);
-    } else if (currentChat?.[0]?.cmds?.includes("summarizeTab")) {
+      // If text is present, get the first 25 characters and it it's over 25 add ... at the end
+      return currentChat[0].text.length > 25
+        ? currentChat[0].text.slice(0, 25) + "..."
+        : currentChat[0].text
+    } else if (currentChat?.[0]?.cmds?.includes("Summarize Tab")) {
       // If cmds array includes 'summarizeTab', create the title using domain
       return `Summarize ${tabInfo?.domain || "null"}`;
     }
