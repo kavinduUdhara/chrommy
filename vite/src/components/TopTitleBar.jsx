@@ -6,6 +6,8 @@ import GeminiSVG from "./Gemini";
 import { CgMenuLeftAlt } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
+import { AlertRedirectToGitHub } from "./AlertRedirectToGItHub";
+
 export default function TopTitleBar({
   chatOpen,
   tabURL,
@@ -44,9 +46,11 @@ export default function TopTitleBar({
           <button>
             <IoSettingsOutline />
           </button>
-          <button>
-            <FiGithub />
-          </button>
+          <AlertRedirectToGitHub>
+            <button>
+              <FiGithub />
+            </button>
+          </AlertRedirectToGitHub>
         </div>
       </div>
     </div>
