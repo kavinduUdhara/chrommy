@@ -127,6 +127,17 @@ td {
   .def-img-with-loading {
     @apply rounded-md max-w-lg bg-slate-100 h-44 select-none;
   }
+  .def-loading-svg {
+    animation: rotate 2s linear infinite;
+  }
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
   @layer base {
   :root {
     --radius: 0.5rem;
