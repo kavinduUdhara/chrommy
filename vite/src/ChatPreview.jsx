@@ -7,7 +7,7 @@ import "./sidePanel.css";
 import { TbSend2 } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 import { PiArrowDownRightBold } from "react-icons/pi";
-import { BsThreeDots } from "react-icons/bs";
+import { CgMenuLeftAlt } from "react-icons/cg";
 
 import ChatBoxList from "./components/ChatBoxList";
 import TopTitleBar from "./components/TobTitleBar";
@@ -27,6 +27,7 @@ import {
   updateChatByID,
   updateErrorByID,
 } from "./lib/chatHistoryDB";
+import ChatHistory from "./components/ChatHistory";
 
 export default function ChatPreview({ promptAI, session }) {
   const textareaRef = useRef(null);
@@ -55,6 +56,7 @@ export default function ChatPreview({ promptAI, session }) {
     id: null,
   });
   const [currentChatId, setCurrentChatId] = useState(null);
+  const [slideBarOpen, setSlideBarOpen] = useState(false);
 
   //load the activeTab info
   useEffect(() => {
@@ -93,7 +95,7 @@ export default function ChatPreview({ promptAI, session }) {
           setCurrentChatId(chatID);
           await createNewChat({
             domain: tabInfo.domain || "null",
-            title: getTitle(),
+            title: getTitle(currentChat, tabInfo),
             id: chatID,
           });
         } else {
@@ -146,6 +148,10 @@ export default function ChatPreview({ promptAI, session }) {
       context: "",
       placeholder: "Tell me more about...",
     });
+  };
+
+  const toogleSlideBar = () => {
+    setSlideBarOpen(!slideBarOpen);
   };
 
   useEffect(() => {
@@ -230,11 +236,18 @@ export default function ChatPreview({ promptAI, session }) {
 
   return (
     <>
-      <div className={`main-holder ${chatPreAnimation ? "chat-open" : ""}`}>
-        <div className="greeting-holder" data-chatOpen={chatOpen}>
+      <div className="left-menu-holder" data-chatOpen={chatOpen}>
+        <div className="left-menu">
+          <button onClick={toogleSlideBar} data-slideBarOpen={slideBarOpen}>
+            <CgMenuLeftAlt />
+          </button>
           <div className="gemini-logo">
             <p className="def-nano-logo-txt">Gemini Nano</p>
           </div>
+        </div>
+      </div>
+      <div className={`main-holder ${chatPreAnimation ? "chat-open" : ""}`}>
+        <div className="greeting-holder" data-chatOpen={chatOpen}>
           <img src="./img/light-bulb.png" className="img-light" />
           <img src="./img/chair.png" className="img-chair" />
           <div className="text">
@@ -276,6 +289,8 @@ export default function ChatPreview({ promptAI, session }) {
               <TopTitleBar
                 chatOpen={chatPreAnimation}
                 tabURL={tabInfo.domain}
+                slideBarOpen={slideBarOpen}
+                toogleSlideBar={toogleSlideBar}
               />
             </div>
           )}
@@ -292,32 +307,7 @@ export default function ChatPreview({ promptAI, session }) {
             <PiArrowDownRightBold />
           </button>
         </div>
-        <div className="chat-history-holder">
-          <div className="chat-history">
-            <div className="tob-bar">
-              <div className="search">
-                <input type="text" placeholder="Search" />
-              </div>
-              <button>Filter</button>
-            </div>
-            <div className="chat-list" >
-              <div className="list">
-                <div className="info">
-                  <div className="title">I wanna learn more about x</div>
-                  <div className="more-info">
-                    <div className="domain">www.youtube.com</div>
-                    <div className="date">2 days ago</div>
-                  </div>
-                </div>
-                <div className="ac-btns">
-                  <button>
-                    <BsThreeDots />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ChatHistory slideBarOpen={slideBarOpen} chatOpen={chatOpen} toogleSlideBar={toogleSlideBar}/>
         <ChatBoxList
           currentChat={currentChat}
           AIError={AIError}

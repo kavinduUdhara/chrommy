@@ -1,0 +1,25 @@
+.not-found {
+  @apply flex flex-col items-center gap-1 mt-5 mb-5;
+}
+.not-found img {
+  @apply max-w-44 sm:max-w-64 w-full duration-300;
+}
+.not-found h1 {
+  @apply font-bold text-xl text-center;
+}
+.not-found p {
+  @apply p-1 max-w-xl text-center;
+}
+.not-found button {
+  @apply inline-flex items-center gap-1 p-1 px-2 bg-blue-50 rounded-md hover:bg-slate-200 duration-300;
+}
+.not-found button img {
+  @apply max-w-7 duration-300;
+}
+.not-found .checking-info {
+  @apply flex gap-2 items-center bg-blue-50 p-1 px-2 rounded-full select-none;
+}
+
+.not-found .checking-info svg {
+  animation: rotate 2s linear infinite;
+}

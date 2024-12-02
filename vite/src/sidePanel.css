@@ -29,14 +29,23 @@
 .main-holder.chat-open .page-info {
   @apply p-2 text-base rounded-2xl shadow-md;
 }
+.left-menu-holder{
+  @apply flex items-center justify-center fixed top-0 left-0 duration-300 select-none gap-3 z-50 self-center w-full data-[chatOpen=true]:-top-20 data-[chatOpen=true]:scale-0;
+}
+.left-menu-holder .left-menu{
+  @apply max-w-xl w-full flex items-center p-2 gap-2;
+}
+.left-menu-holder button{
+  @apply p-1 rounded-md  flex items-center gap-1 text-base text-slate-600 bg-white shadow hover:shadow-md data-[slideBarOpen=true]:bg-slate-700 data-[slideBarOpen=true]:text-white duration-300;
+}
+.gemini-logo{
+  @apply flex items-center bg-white px-1 rounded-full text-xs shadow-md duration-300 select-none w-fit;
+}
 .greeting-holder {
   @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300 select-none;
 }
 .greeting-holder > img {
   @apply absolute drop-shadow-lg;
-}
-.greeting-holder .gemini-logo{
-  @apply flex items-center bg-white px-1 rounded-full text-xs absolute top-0 left-4 shadow-md duration-300 select-none;
 }
 .greeting-holder .img-light {
   @apply w-32 -top-20 right-0;
@@ -115,7 +124,7 @@
   @apply flex items-center h-full justify-center;
 }
 .page-info-holder .top-title-bar .left .sideBar button{
-  @apply p-1 rounded-lg data-[sideBarOpen=true]:bg-slate-200 data-[sideBarOpen=true]:shadow hover:bg-white hover:shadow-md duration-300;
+  @apply p-1 rounded-lg data-[sideBarOpen=true]:bg-white data-[sideBarOpen=true]:shadow hover:bg-white hover:shadow-md duration-300;
 }
 .page-info-holder .top-title-bar .left .info {
   @apply -space-y-[5px] w-full overflow-hidden max-w-full flex flex-col items-start;
@@ -151,10 +160,49 @@
   @apply duration-300 hover:shadow-md w-7 h-7 flex items-center justify-center hover:bg-white;
 }
 .chat-history-holder{
-  @apply absolute w-full p-2 h-full overflow-hidden flex flex-col items-center z-30 bg-white bg-opacity-50 backdrop-blur-sm;
+  @apply fixed w-full h-full flex flex-col items-center z-30  backdrop-blur max-h-0 p-0 data-[slideBarOpen=true]:max-h-full data-[slideBarOpen=true]:p-2 data-[slideBarOpen=true]:pt-[75px]  text-base duration-300 data-[slideBarChatOpen=true]:pt-[45px];
 }
 .chat-history-holder .chat-history{
-  @apply bg-slate-500 max-w-md p-3 pt-16 rounded-xl w-full h-full;
+  @apply bg-slate-50 bg-opacity-75 backdrop-blur-sm p-0 rounded-xl w-full h-full shadow-xl overflow-hidden flex flex-col relative gap-2 data-[slideBarOpen=true]:p-1 max-w-xl;
+}
+.chat-history-holder .top-bar{
+  @apply w-full overflow-hidden flex items-center gap-2 p-2 pb-0 min-h-12;
+}
+.chat-history-holder .top-bar .search-bar{
+  @apply bg-white relative flex items-center flex-grow overflow-hidden rounded-md shadow-sm h-9;
+}
+.chat-history-holder .top-bar .search-bar svg{
+  @apply absolute left-2;
+}
+.chat-history-holder .top-bar .search-bar input{
+  @apply p-1 px-3 pl-8 w-full focus:outline-none;
+}
+.chat-history-holder .chat-list{
+  @apply w-full h-full flex flex-col justify-start overflow-y-auto items-start px-2 gap-2 pt-3 pb-7;
+}
+.chat-history-holder .chat-list .list{
+  @apply w-full flex justify-between items-center p-2 rounded-lg px-3 hover:bg-white duration-300;
+}
+.chat-history-holder .chat-list .ac-btns button{
+  @apply bg-white p-1 rounded-md shadow-sm hover:shadow duration-100;
+}
+.chat-history-holder .chat-list .list .info{
+  @apply  max-w-full overflow-hidden flex flex-col items-start;
+}
+.chat-history-holder .chat-list .list .info .title{
+  @apply  line-clamp-1 px-1;
+}
+.chat-history-holder .chat-list .list .info .more-info{
+  @apply  flex gap-2 text-xs flex-wrap;
+}
+.chat-history-holder .chat-list .list .info .more-info > *{
+  @apply p-[1px] px-2 rounded-full max-w-full line-clamp-1;
+}
+.chat-history-holder .chat-list .list .info .more-info .domain{
+  @apply bg-slate-600 text-white;
+}
+.chat-history-holder .chat-list .list .info .more-info .date{
+  @apply bg-blue-100;
 }
 .chat-box-list-holder {
   @apply w-full max-w-xl flex flex-col gap-4 mt-3 px-4 text-base z-20 pb-32 pt-4 data-[chatOpen=true]:pt-16 duration-0;

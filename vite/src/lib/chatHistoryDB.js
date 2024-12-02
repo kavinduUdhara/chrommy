@@ -90,10 +90,14 @@ export const getChatByID = async (id) => {
 export const loadChatList = async () => {
   const db = await initDB();
   const chats = await db.getAll(STORE_NAME);
-  return chats.map(({ modifiedAt, title, domain, id }) => ({
-    modifiedAt,
-    title,
-    domain,
-    id,
-  }));
+
+  // Sort chats by 'modifiedAt' in descending order
+  return chats
+    .map(({ modifiedAt, title, domain, id }) => ({
+      modifiedAt,
+      title,
+      domain,
+      id,
+    }))
+    .sort((a, b) => b.modifiedAt - a.modifiedAt);
 };

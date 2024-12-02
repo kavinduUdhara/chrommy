@@ -12,9 +12,11 @@ export default function GeminiSVG() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="grad1" x1="0%" x2="100%" y1="0%" y2="0%">
-          <stop offset="0%" stop-color="#0a88b2" />
-          <stop offset="100%" stop-color="#1e2f97" />
+        <linearGradient id="grad1" x1="10%" x2="100%" y1="10%" y2="0%">
+          <stop offset="10%" stop-color="#4285f4" />
+          <stop offset="50%" stop-color="#9b72cb" />
+          <stop offset="80%" stop-color="#d96570" />
+          <stop offset="90%" stop-color="#d96570" />
         </linearGradient>
       </defs>
       <path
