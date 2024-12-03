@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,26 +22,73 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-import { TbAdjustmentsHorizontal, TbUser, TbUserEdit } from "react-icons/tb";
+import { Slider } from "@/components/ui/slider";
+import { TbAdjustmentsHorizontal, TbUserEdit } from "react-icons/tb";
+import { initDB } from "../lib/chatHistoryDB"; // Import utility functions
+import { createNewPreference, getPreferenceByID, updatePreferenceByID } from "../lib/chatHistoryDB";
 
 export function SettingsPopUp({ children }) {
+  const [preferences, setPreferences] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+    pronouns: "",
+    languageTone: "",
+    topics: "",
+    email: "",
+    phone: "",
+    address: "",
+    temperature: 5,
+    topK: 3,
+  });
+
+  useEffect(() => {
+    console.log("Preferences updated:", preferences);
+  }, [preferences]);
+
+  // Load existing preferences
+  const loadPreferences = async () => {
+    const db = await initDB();
+    const existingPreferences = await getPreferenceByID("userInfo");
+    if (existingPreferences) {
+      setPreferences(existingPreferences.data);
+    }
+  };
+
+  // Handle input changes
+  const handleInputChange = (field, value) => {
+    setPreferences((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Save preferences to the database
+  const savePreferences = async () => {
+    const db = await initDB();
+    try {
+      const existing = await getPreferenceByID("userInfo");
+      console.log("Updating existing preferences:", preferences);
+      if (existing) {
+        await updatePreferenceByID("userInfo", { data: preferences });
+      } else {
+        await createNewPreference("userInfo", {data: preferences} );
+      }
+      alert("Preferences saved successfully!");
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      alert("Failed to save preferences.");
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={loadPreferences}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] p-1 flex overflow-hidden">
         <DialogHeader className="hidden">
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        {/* Tabs */}
-        <Tabs
-          defaultValue="userData"
-          className="w-full flex flex-col items-center"
-        >
+        <Tabs defaultValue="userData" className="w-full flex flex-col items-center">
           <TabsList className="grid w-fit grid-cols-2">
             <TabsTrigger value="userData">
               <TbUserEdit />
@@ -50,118 +99,126 @@ export function SettingsPopUp({ children }) {
           </TabsList>
           <TabsContent value="userData">
             <Card>
-              <CardHeader className="hidden">
-                <CardTitle>Your Persoanl Information</CardTitle>
-                <CardDescription>
-                  Your information helps the chat API (Gemini Nano) deliver a
-                  more personalized and seamless experience tailored to your
-                  preferences. Since everything stays on your device and all
-                  inputs are optional, you have full control over what you
-                  share.
-                </CardDescription>
-              </CardHeader>
-              <div className="px-2 mt-1 mb-3">
-                <Alert className="bg-slate-50">
-                  <TbUserEdit className="h-4 w-4" />
-                  <AlertTitle>Your Personal Information</AlertTitle>
-                  <AlertDescription className="text-xs">
-                    Gemini Nano tailors your chat experience to your
-                    preferences. All data stays offline, and sharing is
-                    optional. If you experience poor-quality responses, try
-                    clearing all fields and{" "}
-                    <a
-                      href="goo.gle/chrome-ai-dev-preview-feedback-quality"
-                      target="_blank"
-                      className="underline text-gray-700"
-                    >
-                      providing feedback.
-                    </a>
-                  </AlertDescription>
-                </Alert>
-              </div>
               <CardContent className="space-y-2">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <div className="space-y-1">
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" />
+                    <Input
+                      id="firstName"
+                      placeholder="John"
+                      value={preferences.firstName}
+                      onChange={(e) => handleInputChange("firstName", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="username" placeholder="Doe" />
+                    <Input
+                      id="lastName"
+                      placeholder="Doe"
+                      value={preferences.lastName}
+                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <div className="space-y-1">
-                    <Label htmlFor="firstName">Age</Label>
-                    <Input id="firstName" placeholder="18" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="lastName">Pronouns</Label>
-                    <Input id="username" placeholder="He/Him" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="lastName">Languge/Tone</Label>
+                    <Label htmlFor="age">Age</Label>
                     <Input
-                      id="username"
-                      placeholder="Formal | casual | humorous | empathetic"
+                      id="age"
+                      placeholder="18"
+                      value={preferences.age}
+                      onChange={(e) => handleInputChange("age", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="pronouns">Pronouns</Label>
+                    <Input
+                      id="pronouns"
+                      placeholder="He/Him"
+                      value={preferences.pronouns}
+                      onChange={(e) => handleInputChange("pronouns", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="languageTone">Language/Tone</Label>
+                    <Input
+                      id="languageTone"
+                      placeholder="Formal | Casual | Humorous | Empathetic"
+                      value={preferences.languageTone}
+                      onChange={(e) => handleInputChange("languageTone", e.target.value)}
                     />
                   </div>
                 </div>
-
                 <div className="space-y-1">
-                  <Label htmlFor="lastName">Topics of Interest</Label>
+                  <Label htmlFor="topics">Topics of Interest</Label>
                   <Input
-                    id="username"
+                    id="topics"
                     placeholder="technology, sports, books"
+                    value={preferences.topics}
+                    onChange={(e) => handleInputChange("topics", e.target.value)}
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="lastName">Email</Label>
-                  <Input id="username" placeholder="JhonDoe@google.com" />
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    placeholder="john.doe@example.com"
+                    value={preferences.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                  />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="lastName">Phone No</Label>
-                  <Input id="username" placeholder="+xx xxx xxxx" />
+                  <Label htmlFor="phone">Phone No</Label>
+                  <Input
+                    id="phone"
+                    placeholder="+xx xxx xxxx"
+                    value={preferences.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                  />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="lastName">Address</Label>
-                  <Textarea placeholder={`x/y, \nABC Road,\nA city.`} />
+                  <Label htmlFor="address">Address</Label>
+                  <Textarea
+                    id="address"
+                    placeholder="x/y, ABC Road, A city"
+                    value={preferences.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                  />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>Save changes</Button>
+                <Button onClick={() => setPreferences({})}>Clear All</Button>
+                <Button onClick={savePreferences}>Save Changes</Button>
               </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="sessionData">
             <Card>
-              <CardHeader className="hidden">
-                <CardTitle>fine tube chat session</CardTitle>
-                <CardDescription></CardDescription>
-              </CardHeader>
-              <div className="px-2 mt-1 mb-3">
-                <Alert className="bg-slate-50">
-                  <TbAdjustmentsHorizontal className="h-4 w-4" />
-                  <AlertTitle>Fine-Tune Chat Behavior</AlertTitle>
-                  <AlertDescription className="text-xs">
-                    Adjust parameters like Temperature and Top-K to shape
-                    response style and variety. For optimal performance, we
-                    recommend keeping these settings at their default values.
-                  </AlertDescription>
-                </Alert>
-              </div>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <Label htmlFor="temperature">Temperature</Label>
+                  <Slider
+                    defaultValue={[preferences.temperature]}
+                    max={10}
+                    step={1}
+                    className="w-full"
+                    onValueChange={(value) => handleInputChange("temperature", value[0])}
+                  />
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
+                <div className="space-y-3">
+                  <Label htmlFor="topK">Top K</Label>
+                  <Slider
+                    defaultValue={[preferences.topK]}
+                    max={19}
+                    step={1}
+                    className="w-full"
+                    onValueChange={(value) => handleInputChange("topK", value[0])}
+                  />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>Save password</Button>
+                <Button onClick={() => setPreferences({ temperature: 5, topK: 3 })}>Reset</Button>
+                <Button onClick={savePreferences}>Save Changes</Button>
               </CardFooter>
             </Card>
           </TabsContent>

@@ -2,23 +2,26 @@ import { openDB } from "idb";
 import React from "react";
 
 const DB_NAME = "ChatHistoryDB";
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 const STORE_NAME = "chats";
+const PREF_STORE_NAME = "preferences";
 
 // Initialize the database
-const initDB = async () => {
+export const initDB = async () => {
   return openDB(DB_NAME, DB_VERSION, {
     upgrade(db) {
+      // Create 'chats' store if not exists
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, {
-          keyPath: "id", // Use the provided 'id' instead of auto-increment
+          keyPath: "id",
         });
-
-        // Create index on 'modifiedAt' field
         store.createIndex("modifiedAt", "modifiedAt", { unique: false });
-
-        // Create index on 'domain' field
         store.createIndex("domain", "domain", { unique: false });
+      }
+
+      // Create 'preferences' store if not exists
+      if (!db.objectStoreNames.contains(PREF_STORE_NAME)) {
+        db.createObjectStore(PREF_STORE_NAME, { keyPath: "id" });
       }
     },
   });
@@ -143,4 +146,58 @@ export const deleteChatByID = async (id) => {
   
   await db.delete(STORE_NAME, id); // Delete the chat by ID
   console.log(`Chat with ID ${id} has been deleted successfully.`);
+};
+
+
+
+
+// Create or Update Preference
+export const createNewPreference = async (id, data) => {
+  const db = await initDB(); // Initialize the database
+  const tx = db.transaction(PREF_STORE_NAME, "readwrite"); // Start a transaction for the 'preferences' store
+  const store = tx.objectStore(PREF_STORE_NAME); // Access the 'preferences' object store
+
+  const newPreference = { id, data }; // Create the new preference object
+  await store.add(newPreference); // Add the new preference to the store
+
+  await tx.done; // Ensure the transaction is completed
+  console.log(`Preference with ID ${id} created successfully.`); // Log the success
+};
+
+// Get Preference by ID
+export const getPreferenceByID = async (id) => {
+  const db = await initDB(); // Initialize the database
+  const tx = db.transaction(PREF_STORE_NAME, "readonly"); // Start a read-only transaction
+  const store = tx.objectStore(PREF_STORE_NAME); // Access the 'preferences' object store
+
+  const preference = await store.get(id); // Get the preference by ID
+  await tx.done; // Ensure the transaction is completed
+
+  if (!preference) {
+    console.warn(`Preference with ID ${id} not found.`); // Log a warning if not found
+    return null;
+  }
+
+  return preference; // Return the found preference
+};
+
+export const updatePreferenceByID = async (id, data) => {
+    const db = await initDB(); // Initialize the database
+    const tx = db.transaction(PREF_STORE_NAME, "readwrite"); // Start a transaction for the 'preferences' store
+    const store = tx.objectStore(PREF_STORE_NAME); // Access the 'preferences' object store
+
+    const existingPreference = await store.get(id); // Retrieve the existing preference by ID
+
+    if (!existingPreference) {
+        console.warn(`Preference with ID ${id} not found. Unable to update.`); // Log a warning if not found
+        return null;
+    }
+
+    // Merge existing preference data with new data
+    existingPreference.data = { ...existingPreference.data, ...data };
+
+    await store.put(existingPreference); // Save the updated preference back to the store
+
+    await tx.done; // Ensure the transaction is completed
+    console.log(`Preference with ID ${id} updated successfully.`); // Log the success
 };
