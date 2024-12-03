@@ -57,7 +57,7 @@
   @apply overflow-auto max-h-full px-2;
 }
 .error-page-holder .error-holder .error-more-info .what-to-do-step-holder {
-  @apply flex flex-col;
+  @apply flex flex-col gap-2;
 }
 .error-page-holder .error-holder .error-more-info p svg {
   @apply inline-block ml-1 mr-1;
@@ -70,4 +70,28 @@
 }
 .error-page-holder .error-holder .error-more-info code {
   @apply bg-white px-1 rounded-md;
+}
+.error-page-holder .error-holder .error-more-info .steps-list {
+  @apply flex flex-col gap-4 mt-2 mb-2;
+}
+.error-page-holder .error-holder .error-more-info .step {
+  @apply flex gap-2;
+}
+.error-page-holder .error-holder .error-more-info .step .step-no{
+  @apply min-w-5 h-5 bg-black rounded-full text-white flex items-center justify-center;
+}
+.error-page-holder .error-holder .error-more-info .step .step-info{
+  @apply w-full space-y-2;
+}
+.error-page-holder .error-holder .error-more-info .step h1{
+  @apply font-bold text-base;
+}
+.error-page-holder .error-holder .error-more-info .spe-list{
+    @apply flex flex-col gap-3;
+}
+.error-page-holder .error-holder .error-more-info .spe-list .spe{
+    @apply flex gap-2 w-full items-center border-t-2 border-dashed border-black first:border-t-0 py-2;
+}
+.error-page-holder .error-holder .error-more-info .spe-list .title{
+    @apply bg-black text-sm  rounded-full text-white px-2;
 }

@@ -43,15 +43,13 @@ export async function checkEnv() {
     }
   }
 
-  throw {
-    title: "Built-in AI Not Ready",
-    message: "Built-in AI is not ready, check your configuration in chrome://flags/#optimization-guide-on-device-model",
-  }
   const state = await checkAiStatus();
   if (state !== "readily") {
-    throw new Error(
-      "Built-in AI is not ready, check your configuration in chrome://flags/#optimization-guide-on-device-model"
-    );
+    throw {
+      title: "Built-in AI Not Ready",
+      message: "Built-in AI is not ready, check your configuration in chrome://flags/#optimization-guide-on-device-model",
+      state: state,
+    }
   }
 }
 

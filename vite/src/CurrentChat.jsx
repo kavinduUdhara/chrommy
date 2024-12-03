@@ -3,6 +3,7 @@ import { FaGithub } from "react-icons/fa6";
 import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ErrorOptions } from "./components/ErrorOptions";
+import { AlertRedirectToGitHub } from "./components/AlertRedirectToGItHub";
 
 import { useEffect, useState } from "react";
 import ChatPreview from "./ChatPreview";
@@ -43,7 +44,7 @@ export default function CurrentChat() {
         setSession(session);
       } catch (error) {
         console.error("Error with AI session:", error);
-        setError(Object.create(error));
+        setError(error);
       }
     }
     init();
@@ -64,10 +65,12 @@ export default function CurrentChat() {
             </div>
           </div>
           <div className="top-bar-right">
-            <button className="ac-btn">
-              <FaGithub />
-              <div className="sr-only">Github</div>
-            </button>
+            <AlertRedirectToGitHub>
+              <button className="ac-btn">
+                <FaGithub />
+                <div className="sr-only">Github</div>
+              </button>
+            </AlertRedirectToGitHub>
           </div>
         </div>
         <div className="pg-content">
@@ -91,9 +94,13 @@ export default function CurrentChat() {
                 </Alert>
               </div>
               <div className="error-more-info">
-                <ErrorOptions errorMsg={error.message} errorTitle={error.title}/>
+                <ErrorOptions
+                  errorMsg={error.message}
+                  errorTitle={error.title}
+                  errorStatus={error.status ? error.status : null}
+                />
               </div>
-            </div>  
+            </div>
           </div>
         </div>
       </div>
