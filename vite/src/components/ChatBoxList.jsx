@@ -20,9 +20,17 @@ export default function ChatBoxList({
     window.location.reload();
   };
 
+  const openReportPage = () => {
+    window.open(
+      "https://docs.google.com/forms/d/e/1FAIpQLSfS1cVG_qx-5WD8yM_hfL76ISL_okAQAnLgXUB4RFmJ79FrvA/viewform",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   useEffect(() => {
     console.log(AIError);
-    console.log(currentChat );
+    console.log(currentChat);
   }, [AIError, currentChat]);
   return (
     <div class="chat-box-list-holder" data-chatOpen={chatOpen}>
@@ -42,7 +50,7 @@ export default function ChatBoxList({
                 <div className="text">{AIError.message}</div>
                 {ongoingChat && (
                   <div className="action-btns">
-                    <button>
+                    <button onClick={openReportPage}>
                       <GoBug /> Report
                     </button>
                     <button data-primary={true} onClick={onStartNewChat}>
