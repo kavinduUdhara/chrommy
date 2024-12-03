@@ -34,17 +34,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CgRename } from "react-icons/cg";
 
-export function ChatHistoryOptions({ children }) {
+export function ChatHistoryOptions({ children, onRemove }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-30">
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <CgRename />
             <span>Rename</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenuItem> */}
+          <DropdownMenuItem onClick={onRemove}>
             <MdDeleteOutline />
             <span>Remove</span>
           </DropdownMenuItem>

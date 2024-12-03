@@ -15,6 +15,7 @@ import { deleteAllChats } from "@/lib/chatHistoryDB";
 import toast from "react-hot-toast";
 
 import { ChatHistoryOptions } from "./ChatHistoryOptions";
+import { deleteChatByID } from "@/lib/chatHistoryDB";
 
 export default function ChatHistory({
   slideBarOpen,
@@ -90,6 +91,20 @@ export default function ChatHistory({
     }
   };
 
+  const handleDeleteChatById = async (id) => {
+    const loadingToast = toast.loading("Deleting chat...");
+    try {
+      await deleteChatByID(id);
+      toast.success("Chat has been deleted.", { id: loadingToast });
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+      toast.error("Failed to delete chat.", { id: loadingToast });
+    } finally {
+      toogleSlideBar();
+      goHomeFullReload();
+    }
+  }
+
   return (
     <div
       className="chat-history-holder"
@@ -156,7 +171,7 @@ export default function ChatHistory({
                   </div>
                 </div>
                 <div className="ac-btns">
-                  <ChatHistoryOptions>
+                  <ChatHistoryOptions onRemove={() => {handleDeleteChatById(id)}}>
                     <button>
                       <BsThreeDots /> <div className="sr-only">more options</div>
                     </button>
