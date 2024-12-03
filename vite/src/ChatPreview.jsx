@@ -98,7 +98,7 @@ export default function ChatPreview({ promptAI, session }) {
           console.log("making new id");
           const chatID = getUniqueID();
           setCurrentChatId(chatID);
-          window.history.pushState({}, '', `/sidePanel/chat/${chatID}`);
+          window.history.pushState({}, "", `/sidePanel/chat/${chatID}`);
           await createNewChat({
             domain: tabInfo.domain || "null",
             title: getTitle(currentChat, tabInfo),
@@ -160,9 +160,19 @@ export default function ChatPreview({ promptAI, session }) {
     setSlideBarOpen(!slideBarOpen);
   };
 
+  const handleKeyPress = (e) => {
+    if (textBoxActive){
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Prevent newline
+        handelSubmitButton(); // Submit message
+      }
+    }
+  };
+
   useEffect(() => {
     console.log("currentChat", currentChat);
   }, [currentChat]);
+  
   const handelSubmitButton = async () => {
     if (!textBox.text && !textBox.cmds) return;
     if (!textBoxActive) return;
@@ -360,12 +370,12 @@ export default function ChatPreview({ promptAI, session }) {
             <textarea
               id="chat-input"
               ref={textareaRef}
-              disabled={!textBoxActive}
               rows="1"
               placeholder={textBox.placeholder}
               value={textBox.text}
               onChange={(e) => setTextBox({ ...textBox, text: e.target.value })}
-            ></textarea>
+              onKeyPress={handleKeyPress}
+            />
             <button
               id="send-btn"
               onClick={handelSubmitButton}

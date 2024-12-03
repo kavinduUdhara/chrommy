@@ -11,6 +11,7 @@ export default function ChatBoxList({
   textBoxActive,
   AIError,
   ongoingChat = true,
+  responseLoadig = false,
 }) {
   const navigate = useNavigate();
 
@@ -72,7 +73,7 @@ export default function ChatBoxList({
                   </div>
                 )}
                 {chat.text && (
-                  <div class="text">{chat.user ? chat.text : chat.preview}</div>
+                  <div class="text">{chat.user ? chat.text : (chat.preview !== "" ? chat.preview : (<div className="def-loading-box">Thinking</div>))}</div>
                 )}
               </div>
             )}
