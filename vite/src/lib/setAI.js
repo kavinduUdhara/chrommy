@@ -28,20 +28,25 @@ export async function checkEnv() {
     var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
     return raw ? parseInt(raw[2], 10) : 0;
   }
-
+  
   const version = getChromeVersion();
   if (version < 127 && !("ai" in globalThis)) {
-    throw new Error(
-      "Your browser is not supported. Please update to 127 version or greater."
-    );
+    throw {
+      title: "Unsupported Browser",
+      message: `Your browser is not supported. You are currently using version ${version}.`,
+    };
   }
-
   if (!("ai" in globalThis)) {
-    throw new Error(
-      "Prompt API is not available, check your configuration in chrome://flags/#prompt-api-for-gemini-nano"
-    );
+    throw {
+      title: "Prompt API Unavailable",
+      message: "Prompt API is not available, check your configuration in chrome://flags/#prompt-api-for-gemini-nano",
+    }
   }
 
+  throw {
+    title: "Built-in AI Not Ready",
+    message: "Built-in AI is not ready, check your configuration in chrome://flags/#optimization-guide-on-device-model",
+  }
   const state = await checkAiStatus();
   if (state !== "readily") {
     throw new Error(

@@ -1,0 +1,73 @@
+.error-page-holder {
+  @apply w-full h-svh flex flex-col items-center overflow-hidden;
+}
+.error-page-holder .top-bar {
+  @apply w-11/12 flex justify-between items-center max-w-2xl bg-slate-50 mt-1 px-3 rounded-xl p-1;
+}
+.error-page-holder .top-bar .top-bar-left {
+  @apply w-full flex gap-2 max-w-2xl p-1 items-center;
+}
+.error-page-holder .top-bar .top-bar-left img {
+  @apply w-9 h-9 p-1 rounded-lg shadow border bg-white;
+}
+.error-page-holder .top-bar .top-bar-left .gemini-logo {
+  @apply text-xs p-0 px-[4px];
+  font-size: 0.65rem !important;
+}
+.error-page-holder .top-bar .top-bar-left .top-bar-title {
+  @apply text-base font-bold;
+}
+.error-page-holder .top-bar .top-bar-right {
+  @apply flex gap-2 items-center;
+}
+.error-page-holder .top-bar .top-bar-right button {
+  @apply p-2 rounded-md shadow-md border hover:bg-zinc-900 hover:text-white duration-300 bg-white;
+}
+.error-page-holder .pg-content {
+  @apply w-full bg-white h-full relative overflow-hidden flex p-3 pt-10 justify-center;
+}
+.error-page-holder .pg-content .error-holder {
+  @apply w-11/12 max-w-sm h-full max-h-[400px] relative;
+}
+.error-page-holder .pg-content .error-holder .bg-img-holder {
+  @apply absolute top-0 bottom-0 left-0 right-0 z-10;
+}
+.error-page-holder .pg-content .error-holder .bg-img-holder > img {
+  @apply absolute drop-shadow-md;
+}
+.error-page-holder .pg-content .error-holder .img-chair {
+  @apply w-60 -right-28 top-1/2;
+  transform: rotate(20deg) translateY(-50%);
+}
+.error-page-holder .pg-content .error-holder .img-apple {
+  @apply w-20 -left-12 top-16;
+  transform: rotate(-20deg);
+}
+.error-page-holder .pg-content .error-holder .error-box {
+  @apply absolute z-20 bottom-0 top-0 left-0 right-0 p-0 rounded-xl bg-slate-50 bg-opacity-70 backdrop-blur-md overflow-hidden flex flex-col;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+}
+.error-page-holder .error-holder .error-title {
+  @apply p-2 pb-1 space-y-2;
+}
+.error-page-holder .error-holder .banner {
+  @apply bg-red-700 w-fit px-2 text-sm rounded-full text-white absolute z-10 right-4;
+}
+.error-page-holder .error-holder .error-more-info {
+  @apply overflow-auto max-h-full px-2;
+}
+.error-page-holder .error-holder .error-more-info .what-to-do-step-holder {
+  @apply flex flex-col;
+}
+.error-page-holder .error-holder .error-more-info p svg {
+  @apply inline-block ml-1 mr-1;
+}
+.error-page-holder .error-holder .error-more-info .note {
+  @apply bg-yellow-50 p-2 my-2 last:mb-0 rounded-md text-xs;
+}
+.error-page-holder .error-holder .error-more-info .step-budge {
+  @apply text-xs self-end bg-black text-white px-1 rounded-full;
+}
+.error-page-holder .error-holder .error-more-info code {
+  @apply bg-white px-1 rounded-md;
+}

@@ -56,7 +56,7 @@ Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
     const session = await window.ai.languageModel.create({systemPrompt: systemPrompt});
     return session;
   } catch (err) {
-    throw new Error(err.message || "Unknown error occurred.");
+    throw err;
   }
 };
 
