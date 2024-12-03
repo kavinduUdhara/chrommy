@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -23,9 +24,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { TbAdjustmentsHorizontal, TbUserEdit } from "react-icons/tb";
 import { initDB } from "../lib/chatHistoryDB"; // Import utility functions
-import { createNewPreference, getPreferenceByID, updatePreferenceByID } from "../lib/chatHistoryDB";
+import {
+  createNewPreference,
+  getPreferenceByID,
+  updatePreferenceByID,
+} from "../lib/chatHistoryDB";
+import toast, { Toaster } from "react-hot-toast";
 
 export function SettingsPopUp({ children }) {
   const [preferences, setPreferences] = useState({
@@ -38,13 +46,8 @@ export function SettingsPopUp({ children }) {
     email: "",
     phone: "",
     address: "",
-    temperature: 5,
-    topK: 3,
+    reaplyPreference: "",
   });
-
-  useEffect(() => {
-    console.log("Preferences updated:", preferences);
-  }, [preferences]);
 
   // Load existing preferences
   const loadPreferences = async () => {
@@ -64,17 +67,18 @@ export function SettingsPopUp({ children }) {
   const savePreferences = async () => {
     const db = await initDB();
     try {
+      const toastId = toast.loading("Saving preferences...");
       const existing = await getPreferenceByID("userInfo");
       console.log("Updating existing preferences:", preferences);
       if (existing) {
-        await updatePreferenceByID("userInfo", { data: preferences });
+        await updatePreferenceByID("userInfo", preferences);
       } else {
-        await createNewPreference("userInfo", {data: preferences} );
+        await createNewPreference("userInfo", preferences);
       }
-      alert("Preferences saved successfully!");
+      toast.success("Preferences saved successfully.", { id: toastId });
     } catch (error) {
       console.error("Error saving preferences:", error);
-      alert("Failed to save preferences.");
+      toast.error("Failed to save preferences. Please try again later.");
     }
   };
 
@@ -88,7 +92,10 @@ export function SettingsPopUp({ children }) {
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="userData" className="w-full flex flex-col items-center">
+        <Tabs
+          defaultValue="userData"
+          className="w-full flex flex-col items-center"
+        >
           <TabsList className="grid w-fit grid-cols-2">
             <TabsTrigger value="userData">
               <TbUserEdit />
@@ -98,7 +105,29 @@ export function SettingsPopUp({ children }) {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="userData">
-            <Card>
+            <CardHeader className="hidden">
+              <CardTitle>Your Persoanl Information</CardTitle>
+            </CardHeader>
+            <Card className="relative">
+              <div className="px-2 mt-1 mb-3">
+                <Alert className="bg-slate-50">
+                  <TbUserEdit className="h-4 w-4" />
+                  <AlertTitle>Your Personal Information</AlertTitle>
+                  <AlertDescription className="text-xs">
+                    Gemini Nano tailors your chat experience to your
+                    preferences. All data stays offline, and sharing is
+                    optional. If you experience poor-quality responses, try
+                    clearing all fields and{" "}
+                    <a
+                      href="goo.gle/chrome-ai-dev-preview-feedback-quality"
+                      target="_blank"
+                      className="underline text-gray-700"
+                    >
+                      providing feedback.
+                    </a>
+                  </AlertDescription>
+                </Alert>
+              </div>
               <CardContent className="space-y-2">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <div className="space-y-1">
@@ -107,7 +136,9 @@ export function SettingsPopUp({ children }) {
                       id="firstName"
                       placeholder="John"
                       value={preferences.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
                     />
                   </div>
                   <div className="space-y-1">
@@ -116,7 +147,9 @@ export function SettingsPopUp({ children }) {
                       id="lastName"
                       placeholder="Doe"
                       value={preferences.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -136,7 +169,9 @@ export function SettingsPopUp({ children }) {
                       id="pronouns"
                       placeholder="He/Him"
                       value={preferences.pronouns}
-                      onChange={(e) => handleInputChange("pronouns", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("pronouns", e.target.value)
+                      }
                     />
                   </div>
                   <div className="space-y-1">
@@ -145,7 +180,9 @@ export function SettingsPopUp({ children }) {
                       id="languageTone"
                       placeholder="Formal | Casual | Humorous | Empathetic"
                       value={preferences.languageTone}
-                      onChange={(e) => handleInputChange("languageTone", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("languageTone", e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -155,7 +192,9 @@ export function SettingsPopUp({ children }) {
                     id="topics"
                     placeholder="technology, sports, books"
                     value={preferences.topics}
-                    onChange={(e) => handleInputChange("topics", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("topics", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-1">
@@ -180,45 +219,89 @@ export function SettingsPopUp({ children }) {
                   <Label htmlFor="address">Address</Label>
                   <Textarea
                     id="address"
-                    placeholder="x/y, ABC Road, A city"
+                    placeholder={`x/y, \nABC Road, \nA city`}
                     value={preferences.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
                   />
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button onClick={() => setPreferences({})}>Clear All</Button>
-                <Button onClick={savePreferences}>Save Changes</Button>
+              <CardFooter className="sticky bottom-0 p-1 flex flex-row-reverse gap-2">
+                <DialogClose>
+                  <Button
+                    className="text-white p-1 px-3 rounded-md bg-black"
+                    onClick={savePreferences}
+                  >
+                    Save Changes
+                  </Button>
+                </DialogClose>
+                {/* <button
+                  className="bg-slate-50 p-1 px-3 rounded-md "
+                  onClick={() => {
+                    setPreferences({});
+                  }}
+                >
+                  Clear All
+                </button> */}
               </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="sessionData">
             <Card>
+              <CardHeader className="hidden">
+                <CardTitle>fine tube chat session</CardTitle>
+                <CardDescription></CardDescription>
+              </CardHeader>
+              <div className="px-2 mt-1 mb-3">
+                <Alert className="bg-slate-50">
+                  <TbAdjustmentsHorizontal className="h-4 w-4" />
+                  <AlertTitle>Fine-Tune Chat Behavior</AlertTitle>
+                  <AlertDescription className="text-xs">
+                    Customize Chrommy's responses by specifying your preferred
+                    tone, style, and level of detail, helping it better match
+                    your needs.
+                  </AlertDescription>
+                </Alert>
+              </div>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <Label htmlFor="temperature">Temperature</Label>
-                  <Slider
-                    defaultValue={[preferences.temperature]}
-                    max={10}
-                    step={1}
-                    className="w-full"
-                    onValueChange={(value) => handleInputChange("temperature", value[0])}
+                  <Label htmlFor="reaplyPreference">
+                    How would you prefer Chrommy to reply?
+                  </Label>
+                  <Textarea
+                    id="reaplyPreference"
+                    placeholder="I would like Chrommy to respond in a friendly and clear tone, providing helpful and concise answers. If possible, please include examples to make things easier to understand."
+                    value={preferences.reaplyPreference}
+                    onChange={(e) =>
+                      handleInputChange("reaplyPreference", e.target.value)
+                    }
                   />
                 </div>
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <Label htmlFor="topK">Top K</Label>
                   <Slider
                     defaultValue={[preferences.topK]}
                     max={19}
                     step={1}
                     className="w-full"
-                    onValueChange={(value) => handleInputChange("topK", value[0])}
+                    onValueChange={(value) =>
+                      handleInputChange("topK", value[0])
+                    }
                   />
-                </div>
+                </div> */}
               </CardContent>
-              <CardFooter>
-                <Button onClick={() => setPreferences({ temperature: 5, topK: 3 })}>Reset</Button>
-                <Button onClick={savePreferences}>Save Changes</Button>
+              <CardFooter className="sticky bottom-0 p-1 flex flex-row-reverse gap-2">
+                <DialogClose>
+                  <Button onClick={savePreferences}>Save Changes</Button>
+                </DialogClose>
+                {/* <Button 
+                  onClick={() => {
+                    setPreferences({});
+                  }}
+                >
+                  Clear All
+                </Button> */}
               </CardFooter>
             </Card>
           </TabsContent>

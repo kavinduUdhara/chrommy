@@ -46,12 +46,12 @@ export default function TopTitleBar({
         <div className="ac-btns">
           <SettingsPopUp>
             <button>
-              <IoSettingsOutline />
+              <IoSettingsOutline /><div className="sr-only">settings</div>
             </button>
           </SettingsPopUp>
           <AlertRedirectToGitHub>
             <button>
-              <FiGithub />
+              <FiGithub /><div className="sr-only">github</div>
             </button>
           </AlertRedirectToGitHub>
         </div>

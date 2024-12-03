@@ -12,6 +12,8 @@ import { CgMenuLeftAlt } from "react-icons/cg";
 
 import ChatBoxList from "./components/ChatBoxList";
 import TopTitleBar from "./components/TopTitleBar";
+import { SettingsPopUp } from "./components/SettingsPopUp";
+import { AlertRedirectToGitHub } from "./components/AlertRedirectToGItHub";
 import {
   loadTheActiveTabInfo,
   checkFaviconBrightness,
@@ -29,6 +31,8 @@ import {
   updateErrorByID,
 } from "./lib/chatHistoryDB";
 import ChatHistory from "./components/ChatHistory";
+import { FiGithub } from "react-icons/fi";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export default function ChatPreview({ promptAI, session }) {
   const textareaRef = useRef(null);
@@ -246,6 +250,20 @@ export default function ChatPreview({ promptAI, session }) {
           <div className="gemini-logo">
             <p>Gemini Nano</p>
           </div>
+        </div>
+        <div className="right-menu">
+          <SettingsPopUp>
+            <button>
+              <IoSettingsOutline />
+              <div className="sr-only">settings</div>
+            </button>
+          </SettingsPopUp>
+          <AlertRedirectToGitHub>
+            <button>
+              <FiGithub />
+              <div className="sr-only">github</div>
+            </button>
+          </AlertRedirectToGitHub>
         </div>
       </div>
       <div className={`main-holder ${chatPreAnimation ? "chat-open" : ""}`}>

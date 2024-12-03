@@ -14,6 +14,8 @@ import { AlertDialogHolder } from "./Alert";
 import { deleteAllChats } from "@/lib/chatHistoryDB";
 import toast from "react-hot-toast";
 
+import { ChatHistoryOptions } from "./ChatHistoryOptions";
+
 export default function ChatHistory({
   slideBarOpen,
   chatOpen,
@@ -154,9 +156,11 @@ export default function ChatHistory({
                   </div>
                 </div>
                 <div className="ac-btns">
-                  <button>
-                    <BsThreeDots />
-                  </button>
+                  <ChatHistoryOptions>
+                    <button>
+                      <BsThreeDots /> <div className="sr-only">more options</div>
+                    </button>
+                  </ChatHistoryOptions>
                 </div>
               </button>
             ))

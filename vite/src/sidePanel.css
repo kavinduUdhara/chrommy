@@ -32,19 +32,22 @@
 
 
 .left-menu-holder{
-  @apply flex items-center justify-center fixed top-0 left-0 duration-300 select-none gap-3 z-50 self-center w-full data-[chatOpen=true]:-top-20 data-[chatOpen=true]:scale-0;
+  @apply flex items-center justify-between fixed top-0 duration-300 select-none gap-3 z-50 self-center w-full max-w-xl left-1/2 -translate-x-1/2 data-[chatOpen=true]:-top-20 data-[chatOpen=true]:scale-0;
 }
 .left-menu-holder .left-menu{
-  @apply max-w-xl w-full flex items-center p-2 gap-2;
+  @apply max-w-xl flex items-center p-2 gap-2;
 }
 .left-menu-holder button{
-  @apply p-1 rounded-md  flex items-center gap-1 text-base text-slate-600 bg-white shadow hover:shadow-md data-[slideBarOpen=true]:bg-slate-700 data-[slideBarOpen=true]:text-white duration-300;
+  @apply p-1 rounded-md  flex items-center gap-1 text-base text-slate-600 bg-white shadow hover:shadow-lg hover:bg-slate-50 data-[slideBarOpen=true]:bg-slate-700 data-[slideBarOpen=true]:text-white duration-300;
 }
 .gemini-logo{
   @apply flex items-center bg-slate-700 text-white p-[2px] px-2 rounded-full text-xs shadow-md duration-300 select-none w-fit;
 }
+.left-menu-holder .right-menu{
+  @apply max-w-xl flex items-center p-2 gap-2;
+}
 .greeting-holder {
-  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-lg duration-300 select-none;
+  @apply bg-white w-full text-center mt-5 mb-5 text-base flex justify-center relative max-w-sm duration-300 select-none;
 }
 .greeting-holder > img {
   @apply absolute drop-shadow-lg;

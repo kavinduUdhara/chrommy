@@ -71,7 +71,13 @@ td {
 .chat-box-holder ul {
   @apply space-y-1 list-disc list-inside;
 }
-.chat-box-holder :where(ul>li)::marker{
+
+.chat-box-holder ul ul,
+.chat-box-holder ol ul {
+  @apply list-disc list-inside pl-5; /* Ensure proper padding for nested lists */
+}
+
+.chat-box-holder :where(ul > li)::marker {
   @apply text-gray-600;
 }
 
@@ -79,6 +85,10 @@ td {
   @apply space-y-4 list-decimal list-inside;
 }
 
+.chat-box-holder ol ol,
+.chat-box-holder ul ol {
+  @apply list-decimal list-inside pl-5; /* Ensure proper padding for nested ordered lists */
+}
 .chat-box-holder p code{
   @apply bg-slate-100 px-1 rounded-md
 }
