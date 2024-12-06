@@ -30,11 +30,11 @@ export async function checkEnv() {
   }
   
   const version = getChromeVersion();
+  throw {
+    title: "Unsupported Browser",
+    message: `Your browser is not supported. You are currently using version ${version}.`,
+  };
   if (version < 127 && !("ai" in globalThis)) {
-    throw {
-      title: "Unsupported Browser",
-      message: `Your browser is not supported. You are currently using version ${version}.`,
-    };
   }
   if (!("ai" in globalThis)) {
     throw {
